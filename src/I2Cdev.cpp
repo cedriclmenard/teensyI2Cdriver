@@ -268,14 +268,25 @@ void I2Cdev::initializeI2C0(uint32_t frequency) {
 
 I2Cdev::I2Cdev(uint8_t address) : _address(address) {
   // Enable interrupt
-  //
   I2C0_C1 |= I2C_C1_IICIE;
+
+  // TODO: Add callback to callback list
 }
 
-void I2Cdev::read(uint8_t *data, uint32_t length, void (*completeCallback)(uint8_t *, uint32_t))
+void I2Cdev::read(uint8_t *data, uint32_t length, void (*completeCallback)(uint8_t *, uint32_t)) {
+  _readCompleteCallback = completeCallback;
+}
+
+void I2Cdev::write(uint8_t *data, uint32_t length, void (*completeCallback)(uint8_t *, uint32_t)) {
+  _rwBuffer = data;
+  _bytesToWrite = length;
+  _currentWriteIndex = 0;
+  writeByte(_address << 1);
+}
 
 void I2Cdev::callback() {
     switch (_currentState) {
+    // Receiver mode
     case RECEIVE:
       if (_currentWriteMode == ADDRESSING) {
         // If last byte was a write-address, but the master is trying to read
@@ -285,18 +296,45 @@ void I2Cdev::callback() {
         _currentWriteMode = DATA;
       } else {
         if (_bytesToRead == 0) {
+          // If last byte, signal stop
           stopSignal();
+
+          // Set current state to IDLE
           _currentState = IDLE;
+
+          // Call read complete callback function
+          if (*_readCompleteCallback != NULL) {
+            _readCompleteCallback(_rwBuffer,_currentReadIndex+1);
+            // Reset callback to NULL pointer
+            _readCompleteCallback = NULL;
+          }
+
         } else if (_bytesToRead == 1) {
+          // Otherwise, if second to last, make sure last NACKs the line
           disableAck();
+          // Read
+          _rwBuffer[_currentReadIndex] = readByte();
+          _bytesToRead--;
+        } else {
+          // Read
+          _rwBuffer[_currentReadIndex] = readByte();
+          _bytesToRead--;
         }
-        _rwBuffer[_currentReadIndex] = readByte();
-        _bytesToRead--;
         break;
       }
+
+    // Write mode
     case TRANSMIT:
       if (_bytesToWrite == 0) {
+        // Generate stop signal
         stopSignal();
+
+        // Call callback function
+        if (_writeCompleteCallback != NULL) {
+          _writeCompleteCallback(_rwBuffer, _currentWriteIndex+1);
+          _writeCompleteCallback = NULL;
+        }
+
       } else {
         I2C0_D = _rwBuffer[_currentWriteIndex];
         _currentWriteIndex++;

@@ -50,11 +50,19 @@ private:
   //uint8_t _rwBuffer[I2C_RW_BUFFER_SIZE];
   uint8_t* _rwBuffer;
 
+  void (*_readCompleteCallback)(uint8_t *data, uint32_t length) = NULL;
+  void (*_writeCompleteCallback)(uint8_t *data, uint32_t length) = NULL;
+
+
 
 public:
   I2Cdev(uint8_t address);
-  void write(uint8_t data[], uint32_t length);
+  void write(uint8_t data[], uint32_t length, void (*completeCallback)(uint8_t *, uint32_t) = NULL);
   void read(uint8_t *data, uint32_t length, void (*completeCallback)(uint8_t *data, uint32_t length));
+  void writeRegister(uint8_t data[], uint32_t length, void (*completeCallback)(uint8_t *, uint32_t) = NULL);
+  void readRegister(uint8_t *data, uint32_t length, void (*completeCallback)(uint8_t *, uint32_t));
+  // TODO:  Make sure to distinguish between inner call to callback (to transition from write mode (reg) to read)
+  //        and final complete callback call
   void callback();
 
 
