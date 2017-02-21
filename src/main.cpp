@@ -2,6 +2,7 @@
  * First test
  */
 #include "Arduino.h"
+#include "I2Cdev.hpp"
 
 void setup()
 {
@@ -23,6 +24,8 @@ void loop()
 
    // wait for a second
   delay(1000);
+
+  
 }
 
 class MPU6050 {
@@ -33,4 +36,4 @@ public:
   void begin();
   void end();
 
-}
+};

@@ -271,6 +271,7 @@ I2Cdev::I2Cdev(uint8_t address) : _address(address) {
   I2C0_C1 |= I2C_C1_IICIE;
 
   // TODO: Add callback to callback list
+
 }
 
 void I2Cdev::read(uint8_t *data, uint32_t length, void (*completeCallback)(uint8_t *, uint32_t)) {
