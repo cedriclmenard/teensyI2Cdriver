@@ -13,6 +13,9 @@
   I2C0_C1 |= I2C_C1_TXAK
 #define clearInterrupt() I2C0_S &= ~I2C_S_IICIF;
 
+
+
+
 void BlockingI2Cdev::waitAck() {
   while ((I2C0_S & I2C_S_IICIF) == 0) {
     // Wait
@@ -91,7 +94,7 @@ void BlockingI2Cdev::readRegisterBurst(uint8_t reg, uint8_t *data, uint32_t leng
 BlockingI2Cdev::BlockingI2Cdev(uint8_t address) : _address(address) {
 }
 
-void I2Cdev::initializeI2C0(uint32_t frequency) {
+void I2Cdev::initializeI2C0(uint32_t frequency) { // static
   // Enable GPIO
   SIM_SCGC5 |= SIM_SCGC5_PORTA | SIM_SCGC5_PORTB | SIM_SCGC5_PORTC | SIM_SCGC5_PORTD | SIM_SCGC5_PORTE;
 
@@ -266,12 +269,30 @@ void I2Cdev::initializeI2C0(uint32_t frequency) {
 
 }
 
-I2Cdev::I2Cdev(uint8_t address) : _address(address) {
+
+
+// MARK: Non blocking I2C
+/*
+ *
+ *
+ *
+ *
+ *
+ */
+
+
+
+// I2Cdev::I2Cdev(uint8_t address) : _address(address) {
+//   // Enable interrupt
+//   I2C0_C1 |= I2C_C1_IICIE;
+//
+//   // TODO: Add callback to callback list
+//
+// }
+
+I2Cdev::I2Cdev() {
   // Enable interrupt
   I2C0_C1 |= I2C_C1_IICIE;
-
-  // TODO: Add callback to callback list
-
 }
 
 void I2Cdev::read(uint8_t *data, uint32_t length, void (*completeCallback)(uint8_t *, uint32_t)) {
@@ -347,16 +368,35 @@ void I2Cdev::callback() {
     }
 }
 
-void (*i2c0_callbacks[NUM_I2C_CALLBACKS])(void) = {NULL};
+I2Cdev& I2Cdev::instance() {
+  static I2Cdev s_instance;
+  return s_instance;
+}
+
+uint8_t getAddress();
+void setAddress(uint8_t address);
+
+// // MARK: Multiple call implementation to write/read
+// struct I2CServingQueue {
+//   // Index of c
+//   uint8_t currentlyServing = 255;
+//   uint8_t remainingToServe = 0;
+//
+//   // Data pointer buffer (each pointer to data from requests goes in this)
+//   uint8_t* dataBuffer[NUM_I2C_CALLBACKS] = {NULL};
+//
+//   // Request type (selects which function to call) buffer
+//   enum RequestType {WRITE, READ};
+//   RequestType reqTypeBuffer[NUM_I2C_CALLBACKS];
+//
+//   // Callback fct pointer buffer (after operation has finished)
+//   void (*i2c0_callbacks[NUM_I2C_CALLBACKS])(void) = {NULL};
+//
+// } i2c0ServingQueue;
+
+
 
 void i2c0_isr(){
   clearInterrupt();
-  if (currentNumberOfI2CCallbacks != 0) {
-    for (uint8_t i = 0; i < currentNumberOfI2CCallbacks; i++) {
-      //if (i2c0_callbacks[i] != NULL) {
-      //  i2c0_callbacks[i]();
-      //}
-    }
-  }
-
+  I2Cdev::instance().callback();
 }

@@ -37,6 +37,7 @@ enum I2CWriteMode : uint8_t {
   DATA
 };
 
+// Singleton class
 class I2Cdev {
 private:
   uint8_t _address;
@@ -52,11 +53,15 @@ private:
 
   void (*_readCompleteCallback)(uint8_t *data, uint32_t length) = NULL;
   void (*_writeCompleteCallback)(uint8_t *data, uint32_t length) = NULL;
-
+  I2Cdev();
 
 
 public:
-  I2Cdev(uint8_t address);
+  static I2Cdev& instance();
+
+  uint8_t getAddress();
+  void setAddress(uint8_t address);
+
   void write(uint8_t data[], uint32_t length, void (*completeCallback)(uint8_t *, uint32_t) = NULL);
   void read(uint8_t *data, uint32_t length, void (*completeCallback)(uint8_t *data, uint32_t length));
   void writeRegister(uint8_t data[], uint32_t length, void (*completeCallback)(uint8_t *, uint32_t) = NULL);
