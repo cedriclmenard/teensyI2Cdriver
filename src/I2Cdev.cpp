@@ -373,8 +373,12 @@ I2Cdev& I2Cdev::instance() {
   return s_instance;
 }
 
-uint8_t getAddress();
-void setAddress(uint8_t address);
+uint8_t I2Cdev::getAddress() {
+  return _address;
+}
+void I2Cdev::setAddress(uint8_t address) {
+  _address = address;
+}
 
 // // MARK: Multiple call implementation to write/read
 // struct I2CServingQueue {
