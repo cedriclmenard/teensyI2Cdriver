@@ -2,11 +2,11 @@
 #define I2Cdev_HPP
 
 #include <stdint.h>
-#include "mpu6050.h"
 #include "kinetis.h"
 
 #define NUM_I2C_CALLBACKS 16
 #define I2C_RW_BUFFER_SIZE 64
+
 static uint8_t currentNumberOfI2CCallbacks = 0;
 
 extern void dummy_read_I2C_data(void);
@@ -73,7 +73,7 @@ public:
 
 };
 
-void (*i2c0_callback[NUM_I2C_CALLBACKS])(void) = NULL;
+
 
 //void i2c0_isr();
 

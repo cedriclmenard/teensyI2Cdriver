@@ -347,14 +347,15 @@ void I2Cdev::callback() {
     }
 }
 
+void (*i2c0_callbacks[NUM_I2C_CALLBACKS])(void) = {NULL};
 
 void i2c0_isr(){
   clearInterrupt();
   if (currentNumberOfI2CCallbacks != 0) {
     for (uint8_t i = 0; i < currentNumberOfI2CCallbacks; i++) {
-      if (*i2c0_callback[i] != NULL) {
-        (*i2c0_callback[i])();
-      }
+      //if (i2c0_callbacks[i] != NULL) {
+      //  i2c0_callbacks[i]();
+      //}
     }
   }
 
