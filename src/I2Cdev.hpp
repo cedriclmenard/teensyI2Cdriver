@@ -29,10 +29,12 @@ public:
 
 enum I2CState : uint8_t  {
   TRANSMIT,
+  TRANSMIT_THEN_RECEIVE,
   RECEIVE,
   IDLE
 };
 enum I2CWriteMode : uint8_t {
+  REGISTER,
   ADDRESSING,
   DATA
 };
@@ -50,6 +52,7 @@ private:
   uint32_t _bytesToRead = 0;
   //uint8_t _rwBuffer[I2C_RW_BUFFER_SIZE];
   uint8_t* _rwBuffer;
+  uint8_t _currentRegister;
 
   void (*_readCompleteCallback)(uint8_t *data, uint32_t length) = NULL;
   void (*_writeCompleteCallback)(uint8_t *data, uint32_t length) = NULL;
@@ -64,10 +67,26 @@ public:
 
   void write(uint8_t data[], uint32_t length, void (*completeCallback)(uint8_t *, uint32_t) = NULL);
   void read(uint8_t *data, uint32_t length, void (*completeCallback)(uint8_t *data, uint32_t length));
+
+  /*!
+     \brief Write a certain value to a given register
+     \param data Array of data to write, first value should be the register
+     \param length Length of the array of data
+     \param completeCallback function called upon completion of task
+     \return Nothing
+  */
   void writeRegister(uint8_t data[], uint32_t length, void (*completeCallback)(uint8_t *, uint32_t) = NULL);
-  void readRegister(uint8_t *data, uint32_t length, void (*completeCallback)(uint8_t *, uint32_t));
-  // TODO:  Make sure to distinguish between inner call to callback (to transition from write mode (reg) to read)
-  //        and final complete callback call
+
+  /*!
+     \brief Read a certain value from a given register
+     \param reg Register value to read from
+     \param data Array of data to read to
+     \param length Length of the array of data
+     \param completeCallback function called upon completion of task
+     \return Nothing
+  */
+  void readRegister(uint8_t reg, uint8_t *data, uint32_t length, void (*completeCallback)(uint8_t *, uint32_t));
+  
   void callback();
 
 

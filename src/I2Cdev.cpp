@@ -297,13 +297,38 @@ I2Cdev::I2Cdev() {
 
 void I2Cdev::read(uint8_t *data, uint32_t length, void (*completeCallback)(uint8_t *, uint32_t)) {
   _readCompleteCallback = completeCallback;
+  _bytesToRead = length;
+  _rwBuffer = data;
+  _currentReadIndex = 0;
+  _currentState = RECEIVE;
+  _currentWriteMode = ADDRESSING;
+  startSignal();
+  writeByte((_address << 1) | 1);
+}
+
+void I2Cdev::readRegister(uint8_t reg, uint8_t *data, uint32_t length, void (*completeCallback)(uint8_t *, uint32_t)) {
+  _readCompleteCallback = completeCallback;
+  _bytesToRead = length;
+  _rwBuffer = data;
+  _currentReadIndex = 0;
+  _currentState = TRANSMIT_THEN_RECEIVE;
+  _currentWriteMode = ADDRESSING;
+  _currentRegister = reg;
+  startSignal();
+  writeByte((_address << 1) | 1);
 }
 
 void I2Cdev::write(uint8_t *data, uint32_t length, void (*completeCallback)(uint8_t *, uint32_t)) {
   _rwBuffer = data;
   _bytesToWrite = length;
   _currentWriteIndex = 0;
+  _currentState = TRANSMIT;
+  startSignal();
   writeByte(_address << 1);
+}
+
+void I2Cdev::writeRegister(uint8_t *data, uint32_t length, void (*completeCallback)(uint8_t *, uint32_t)) {
+
 }
 
 void I2Cdev::callback() {
@@ -337,13 +362,32 @@ void I2Cdev::callback() {
           // Read
           _rwBuffer[_currentReadIndex] = readByte();
           _bytesToRead--;
+          _currentReadIndex++;
         } else {
           // Read
           _rwBuffer[_currentReadIndex] = readByte();
           _bytesToRead--;
+          _currentReadIndex++;
         }
         break;
       }
+
+    // Case for readRegister (repeated start)
+    case TRANSMIT_THEN_RECEIVE:
+      if (_currentWriteMode == ADDRESSING) {
+        // If last byte was a write-address, but the master is trying to read
+        // from the device
+        writeByte(_currentRegister);
+        _currentWriteMode = REGISTER;
+      } else if(_currentWriteMode == REGISTER) {
+        repeatedStartSignal();
+        writeByte((_address << 1) | 1);
+        _currentWriteMode = DATA;
+      } else {
+        _currentState = RECEIVE;
+        receiveMode();
+      }
+      break;
 
     // Write mode
     case TRANSMIT:
