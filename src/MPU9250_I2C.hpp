@@ -9,7 +9,7 @@
 // Multiplexed MPU9250_I2C class
 class MPU9250_I2C {
 private:
-
+  
 public:
   MPU9250_I2C(uint8_t muxAddress);
 

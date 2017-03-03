@@ -28,6 +28,9 @@ struct I2CServingQueue {
   enum OperationState {MUXADDR, DATA, END};
   OperationState opState = MUXADDR;
 
+  // Read operation array of register address
+  uint8_t regForRead[NUM_I2C_CALLBACKS] = {0};
+
 
 
 
@@ -48,11 +51,11 @@ struct I2CServingQueue {
       remainingToServe--;
       switch (reqTypeBuffer[currentlyServing]) {
         case WRITE:
-        i2c.writeRegister(dataBuffer[currentlyServing],
+        i2c.write(dataBuffer[currentlyServing],
                           dataLength[currentlyServing], &managingCallback);
         break;
         case READ:
-        i2c.readRegister(dataBuffer[currentlyServing],
+        i2c.readRegister(regForRead[currentlyServing],dataBuffer[currentlyServing],
                          dataLength[currentlyServing], &managingCallback);
         break;
       }
@@ -66,7 +69,7 @@ struct I2CServingQueue {
 void managingCallback(uint8_t *data, uint32_t length) {
   switch (i2c0ServingQueue.opState) {
     case I2CServingQueue::MUXADDR:
-      i2c.writeRegister(uint8_t *data, uint32_t length, optional void (*completeCallback)(uint8_t *, uint32_t))
+      i2c.writeRegister(uint8_t *data, uint32_t length,  void (*completeCallback)(uint8_t *, uint32_t))
       break;
     case I2CServingQueue::DATA:
       break;

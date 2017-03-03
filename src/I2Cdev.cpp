@@ -327,10 +327,6 @@ void I2Cdev::write(uint8_t *data, uint32_t length, void (*completeCallback)(uint
   writeByte(_address << 1);
 }
 
-void I2Cdev::writeRegister(uint8_t *data, uint32_t length, void (*completeCallback)(uint8_t *, uint32_t)) {
-
-}
-
 void I2Cdev::callback() {
     switch (_currentState) {
     // Receiver mode

@@ -65,17 +65,15 @@ public:
   uint8_t getAddress();
   void setAddress(uint8_t address);
 
-  void write(uint8_t data[], uint32_t length, void (*completeCallback)(uint8_t *, uint32_t) = NULL);
-  void read(uint8_t *data, uint32_t length, void (*completeCallback)(uint8_t *data, uint32_t length));
-
   /*!
      \brief Write a certain value to a given register
-     \param data Array of data to write, first value should be the register
+     \param data Array of data to write (if register, it should be the first element)
      \param length Length of the array of data
      \param completeCallback function called upon completion of task
      \return Nothing
   */
-  void writeRegister(uint8_t data[], uint32_t length, void (*completeCallback)(uint8_t *, uint32_t) = NULL);
+  void write(uint8_t data[], uint32_t length, void (*completeCallback)(uint8_t *, uint32_t) = NULL);
+  void read(uint8_t *data, uint32_t length, void (*completeCallback)(uint8_t *data, uint32_t length));
 
   /*!
      \brief Read a certain value from a given register
@@ -86,7 +84,7 @@ public:
      \return Nothing
   */
   void readRegister(uint8_t reg, uint8_t *data, uint32_t length, void (*completeCallback)(uint8_t *, uint32_t));
-  
+
   void callback();
 
 
