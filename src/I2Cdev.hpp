@@ -9,7 +9,7 @@
 
 static uint8_t currentNumberOfI2CCallbacks = 0;
 
-extern void dummy_read_I2C_data(void);
+
 
 class BlockingI2Cdev {
 private:
@@ -22,6 +22,8 @@ public:
   void write(uint8_t data);
   void writeRegisterBurst(uint8_t reg, uint8_t data[], uint32_t length);
   void readRegisterBurst(uint8_t reg, uint8_t *data, uint32_t length);
+  void setAddress(uint8_t address);
+  uint8_t getAddress();
 
 
 

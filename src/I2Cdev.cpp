@@ -1,5 +1,13 @@
 #include "I2Cdev.hpp"
 
+// Include assembly symbols
+void dummy_read_I2C_data(volatile uint8_t *i2c_d){ // This is dark magic
+  uint32_t dummy;
+  asm("LDR %[result], %[reg]" : [result] "=r" (dummy) : [reg] "r" (i2c_d));
+}
+
+
+//
 #define startSignal() I2C0_C1 |= I2C_C1_TX; \
   I2C0_C1 |= I2C_C1_MST
 #define stopSignal() I2C0_C1 &= ~I2C_C1_MST; \
@@ -335,7 +343,7 @@ void I2Cdev::callback() {
         // If last byte was a write-address, but the master is trying to read
         // from the device
         receiveMode();
-        dummy_read_I2C_data();
+        dummy_read_I2C_data(&I2C0_D);
         _currentWriteMode = DATA;
       } else {
         if (_bytesToRead == 0) {

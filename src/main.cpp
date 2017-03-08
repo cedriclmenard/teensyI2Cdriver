@@ -3,6 +3,7 @@
  */
 #include "Arduino.h"
 #include "I2Cdev.hpp"
+#include "MPU9250_I2C.hpp"
 
 void setup()
 {
@@ -24,6 +25,7 @@ void loop()
 
    // wait for a second
   //delay(1000);
+  
 
 
 }
