@@ -1,0 +1,57 @@
+\hypertarget{struct_i2_c_serving_queue}{}\section{I2\+C\+Serving\+Queue Struct Reference}
+\label{struct_i2_c_serving_queue}\index{I2\+C\+Serving\+Queue@{I2\+C\+Serving\+Queue}}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{struct_i2_c_serving_queue_ac151fb41526295f72b356a5ad1bf335b}\label{struct_i2_c_serving_queue_ac151fb41526295f72b356a5ad1bf335b}} 
+enum {\bfseries Request\+Type} \{ {\bfseries W\+R\+I\+TE}, 
+{\bfseries R\+E\+AD}
+ \}
+\item 
+\mbox{\Hypertarget{struct_i2_c_serving_queue_afeae9c0694dac7fb1ed477f9f453f671}\label{struct_i2_c_serving_queue_afeae9c0694dac7fb1ed477f9f453f671}} 
+enum {\bfseries Operation\+State} \{ {\bfseries M\+U\+X\+A\+D\+DR}, 
+{\bfseries D\+A\+TA}, 
+{\bfseries E\+ND}
+ \}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{struct_i2_c_serving_queue_ab91f40d11c9c10f1b13bf48cb1429197}\label{struct_i2_c_serving_queue_ab91f40d11c9c10f1b13bf48cb1429197}} 
+\hyperlink{struct_i2_c_serving_queue}{I2\+C\+Serving\+Queue} \& {\bfseries operator++} ()
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{struct_i2_c_serving_queue_abe2d0f40ba323e20988f64b19ac712d2}\label{struct_i2_c_serving_queue_abe2d0f40ba323e20988f64b19ac712d2}} 
+uint8\+\_\+t {\bfseries currently\+Serving} = 255
+\item 
+\mbox{\Hypertarget{struct_i2_c_serving_queue_a2cc67dbe2c2049bb5f19061042156450}\label{struct_i2_c_serving_queue_a2cc67dbe2c2049bb5f19061042156450}} 
+uint8\+\_\+t {\bfseries remaining\+To\+Serve} = 0
+\item 
+\mbox{\Hypertarget{struct_i2_c_serving_queue_abe2cc8f031217ce2f65591ce1da92c94}\label{struct_i2_c_serving_queue_abe2cc8f031217ce2f65591ce1da92c94}} 
+uint8\+\_\+t $\ast$ {\bfseries data\+Buffer} \mbox{[}N\+U\+M\+\_\+\+I2\+C\+\_\+\+C\+A\+L\+L\+B\+A\+C\+KS\mbox{]} = \{N\+U\+LL\}
+\item 
+\mbox{\Hypertarget{struct_i2_c_serving_queue_aa4bd3aa340958232b2a826a4dccc7cba}\label{struct_i2_c_serving_queue_aa4bd3aa340958232b2a826a4dccc7cba}} 
+uint32\+\_\+t {\bfseries data\+Length} \mbox{[}N\+U\+M\+\_\+\+I2\+C\+\_\+\+C\+A\+L\+L\+B\+A\+C\+KS\mbox{]} = \{0\}
+\item 
+\mbox{\Hypertarget{struct_i2_c_serving_queue_ab5864ad008fbf4f3e950a074041939be}\label{struct_i2_c_serving_queue_ab5864ad008fbf4f3e950a074041939be}} 
+Request\+Type {\bfseries req\+Type\+Buffer} \mbox{[}N\+U\+M\+\_\+\+I2\+C\+\_\+\+C\+A\+L\+L\+B\+A\+C\+KS\mbox{]}
+\item 
+\mbox{\Hypertarget{struct_i2_c_serving_queue_a63888171c724dc8928e9539d6c2b6400}\label{struct_i2_c_serving_queue_a63888171c724dc8928e9539d6c2b6400}} 
+void($\ast$ {\bfseries i2c0\+\_\+callbacks} \mbox{[}N\+U\+M\+\_\+\+I2\+C\+\_\+\+C\+A\+L\+L\+B\+A\+C\+KS\mbox{]})(void) = \{N\+U\+LL\}
+\item 
+\mbox{\Hypertarget{struct_i2_c_serving_queue_ad9dd8db93fef5b12622df408f035819c}\label{struct_i2_c_serving_queue_ad9dd8db93fef5b12622df408f035819c}} 
+uint8\+\_\+t {\bfseries mux\+Addresses} \mbox{[}N\+U\+M\+\_\+\+I2\+C\+\_\+\+C\+A\+L\+L\+B\+A\+C\+KS\mbox{]}
+\item 
+\mbox{\Hypertarget{struct_i2_c_serving_queue_acb7727f7b2ab688f5edc334d5a791ea3}\label{struct_i2_c_serving_queue_acb7727f7b2ab688f5edc334d5a791ea3}} 
+Operation\+State {\bfseries op\+State} = M\+U\+X\+A\+D\+DR
+\item 
+\mbox{\Hypertarget{struct_i2_c_serving_queue_a682a63a94a6fc972667d28d145ec3c2f}\label{struct_i2_c_serving_queue_a682a63a94a6fc972667d28d145ec3c2f}} 
+uint8\+\_\+t {\bfseries reg\+For\+Read} \mbox{[}N\+U\+M\+\_\+\+I2\+C\+\_\+\+C\+A\+L\+L\+B\+A\+C\+KS\mbox{]} = \{0\}
+\end{DoxyCompactItemize}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/\+Users/\+Cedric/\+Documents/\+Programmation/\+P\+I4\+\_\+\+A\+E\+R/\+Platform\+I\+O Teensy 35/src/M\+P\+U9250\+\_\+\+I2\+C.\+cpp\end{DoxyCompactItemize}

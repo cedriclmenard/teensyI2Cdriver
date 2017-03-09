@@ -1,0 +1,85 @@
+\hypertarget{class_i2_cdev}{}\section{I2\+Cdev Class Reference}
+\label{class_i2_cdev}\index{I2\+Cdev@{I2\+Cdev}}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_i2_cdev_a19a57cf53835ca59ef391653906fd3b0}\label{class_i2_cdev_a19a57cf53835ca59ef391653906fd3b0}} 
+uint8\+\_\+t {\bfseries get\+Address} ()
+\item 
+\mbox{\Hypertarget{class_i2_cdev_a43621fa70ca5d13df2c7837c31d9c36c}\label{class_i2_cdev_a43621fa70ca5d13df2c7837c31d9c36c}} 
+void {\bfseries set\+Address} (uint8\+\_\+t address)
+\item 
+void \hyperlink{class_i2_cdev_aa8ff2bc52507231fbbdb5cb5ef6e020d}{write} (uint8\+\_\+t data\mbox{[}$\,$\mbox{]}, uint32\+\_\+t length, void($\ast$complete\+Callback)(uint8\+\_\+t $\ast$, uint32\+\_\+t)=N\+U\+LL)
+\begin{DoxyCompactList}\small\item\em Write a certain value to a given register. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{class_i2_cdev_a7b302621c92feb6ac501ccafeedaa178}\label{class_i2_cdev_a7b302621c92feb6ac501ccafeedaa178}} 
+void {\bfseries read} (uint8\+\_\+t $\ast$data, uint32\+\_\+t length, void($\ast$complete\+Callback)(uint8\+\_\+t $\ast$data, uint32\+\_\+t length))
+\item 
+void \hyperlink{class_i2_cdev_a33672bbff055aeb19b5e75ad0a2def4a}{read\+Register} (uint8\+\_\+t reg, uint8\+\_\+t $\ast$data, uint32\+\_\+t length, void($\ast$complete\+Callback)(uint8\+\_\+t $\ast$, uint32\+\_\+t))
+\begin{DoxyCompactList}\small\item\em Read a certain value from a given register. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{class_i2_cdev_adfad35e4a5689859a96dc33e772ffe46}\label{class_i2_cdev_adfad35e4a5689859a96dc33e772ffe46}} 
+void {\bfseries callback} ()
+\end{DoxyCompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_i2_cdev_a6c23c85743bcfa7ce51256adaa17fd22}\label{class_i2_cdev_a6c23c85743bcfa7ce51256adaa17fd22}} 
+static \hyperlink{class_i2_cdev}{I2\+Cdev} \& {\bfseries instance} ()
+\item 
+\mbox{\Hypertarget{class_i2_cdev_ade55a4cd4906e8bff5d931226ed967d5}\label{class_i2_cdev_ade55a4cd4906e8bff5d931226ed967d5}} 
+static void {\bfseries initialize\+I2\+C0} (uint32\+\_\+t frequency)
+\end{DoxyCompactItemize}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_i2_cdev_a33672bbff055aeb19b5e75ad0a2def4a}\label{class_i2_cdev_a33672bbff055aeb19b5e75ad0a2def4a}} 
+\index{I2\+Cdev@{I2\+Cdev}!read\+Register@{read\+Register}}
+\index{read\+Register@{read\+Register}!I2\+Cdev@{I2\+Cdev}}
+\subsubsection{\texorpdfstring{read\+Register()}{readRegister()}}
+{\footnotesize\ttfamily void I2\+Cdev\+::read\+Register (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{reg,  }\item[{uint8\+\_\+t $\ast$}]{data,  }\item[{uint32\+\_\+t}]{length,  }\item[{void($\ast$)(uint8\+\_\+t $\ast$, uint32\+\_\+t)}]{complete\+Callback }\end{DoxyParamCaption})}
+
+
+
+Read a certain value from a given register. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em reg} & Register value to read from \\
+\hline
+{\em data} & Array of data to read to \\
+\hline
+{\em length} & Length of the array of data \\
+\hline
+{\em complete\+Callback} & function called upon completion of task \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Nothing 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_i2_cdev_aa8ff2bc52507231fbbdb5cb5ef6e020d}\label{class_i2_cdev_aa8ff2bc52507231fbbdb5cb5ef6e020d}} 
+\index{I2\+Cdev@{I2\+Cdev}!write@{write}}
+\index{write@{write}!I2\+Cdev@{I2\+Cdev}}
+\subsubsection{\texorpdfstring{write()}{write()}}
+{\footnotesize\ttfamily void I2\+Cdev\+::write (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{data\mbox{[}$\,$\mbox{]},  }\item[{uint32\+\_\+t}]{length,  }\item[{void($\ast$)(uint8\+\_\+t $\ast$, uint32\+\_\+t)}]{complete\+Callback = {\ttfamily NULL} }\end{DoxyParamCaption})}
+
+
+
+Write a certain value to a given register. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em data} & Array of data to write (if register, it should be the first element) \\
+\hline
+{\em length} & Length of the array of data \\
+\hline
+{\em complete\+Callback} & function called upon completion of task \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Nothing 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/\+Users/\+Cedric/\+Documents/\+Programmation/\+P\+I4\+\_\+\+A\+E\+R/\+Platform\+I\+O Teensy 35/src/I2\+Cdev.\+hpp\item 
+/\+Users/\+Cedric/\+Documents/\+Programmation/\+P\+I4\+\_\+\+A\+E\+R/\+Platform\+I\+O Teensy 35/src/I2\+Cdev.\+cpp\end{DoxyCompactItemize}

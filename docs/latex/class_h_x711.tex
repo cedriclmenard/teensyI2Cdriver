@@ -1,0 +1,72 @@
+\hypertarget{class_h_x711}{}\section{H\+X711 Class Reference}
+\label{class_h_x711}\index{H\+X711@{H\+X711}}
+
+
+\hyperlink{class_h_x711}{H\+X711} D\+TO class.  
+
+
+
+
+{\ttfamily \#include $<$H\+X711.\+hpp$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_h_x711_a4811851fedcc143ef8c5a167bf6d0a27}{H\+X711} (uint32\+\_\+t $\ast$D\+A\+T\+A\+O\+U\+T\+Port, uint32\+\_\+t D\+A\+T\+A\+O\+U\+T\+Pin, uint32\+\_\+t $\ast$S\+C\+K\+Port, uint32\+\_\+t S\+C\+K\+Pin, H\+X711\+Gain gain)
+\begin{DoxyCompactList}\small\item\em Creates a \hyperlink{class_h_x711}{H\+X711} DT object to communicate with a \hyperlink{class_h_x711}{H\+X711} on given port and pins. \end{DoxyCompactList}\item 
+uint32\+\_\+t \hyperlink{class_h_x711_ac449a6f2a029151474312b0bcffd12a0}{blocking\+Read} ()
+\begin{DoxyCompactList}\small\item\em Reads in a blocking manner the given \hyperlink{class_h_x711}{H\+X711} device. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\hyperlink{class_h_x711}{H\+X711} D\+TO class. 
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_h_x711_a4811851fedcc143ef8c5a167bf6d0a27}\label{class_h_x711_a4811851fedcc143ef8c5a167bf6d0a27}} 
+\index{H\+X711@{H\+X711}!H\+X711@{H\+X711}}
+\index{H\+X711@{H\+X711}!H\+X711@{H\+X711}}
+\subsubsection{\texorpdfstring{H\+X711()}{HX711()}}
+{\footnotesize\ttfamily H\+X711\+::\+H\+X711 (\begin{DoxyParamCaption}\item[{uint32\+\_\+t $\ast$}]{D\+A\+T\+A\+O\+U\+T\+Port,  }\item[{uint32\+\_\+t}]{D\+A\+T\+A\+O\+U\+T\+Pin,  }\item[{uint32\+\_\+t $\ast$}]{S\+C\+K\+Port,  }\item[{uint32\+\_\+t}]{S\+C\+K\+Pin,  }\item[{H\+X711\+Gain}]{gain }\end{DoxyParamCaption})}
+
+
+
+Creates a \hyperlink{class_h_x711}{H\+X711} DT object to communicate with a \hyperlink{class_h_x711}{H\+X711} on given port and pins. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em D\+A\+T\+A\+O\+U\+T\+Port} & Port (uint32\+\_\+t pointer to the port) used as D\+A\+T\+A\+O\+UT \\
+\hline
+{\em D\+A\+T\+A\+O\+U\+T\+Pin} & Pin number corresponding to the pin used for D\+A\+T\+A\+O\+UT \\
+\hline
+{\em S\+C\+K\+Port} & Port (uint32\+\_\+t pointer to the port) used as S\+CK \\
+\hline
+{\em S\+C\+K\+Pin} & Pin number corresponding to the pin used for S\+CK \\
+\hline
+{\em gain} & Gain value to be used for this \hyperlink{class_h_x711}{H\+X711} (\hyperlink{class_h_x711}{H\+X711} gain enum) \\
+\hline
+\end{DoxyParams}
+\begin{DoxyPrecond}{Precondition}
+Ports and pins must already be configured as G\+P\+IO input (for D\+A\+T\+A\+O\+UT) and output (for S\+CK) 
+\end{DoxyPrecond}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_h_x711_ac449a6f2a029151474312b0bcffd12a0}\label{class_h_x711_ac449a6f2a029151474312b0bcffd12a0}} 
+\index{H\+X711@{H\+X711}!blocking\+Read@{blocking\+Read}}
+\index{blocking\+Read@{blocking\+Read}!H\+X711@{H\+X711}}
+\subsubsection{\texorpdfstring{blocking\+Read()}{blockingRead()}}
+{\footnotesize\ttfamily uint32\+\_\+t H\+X711\+::blocking\+Read (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Reads in a blocking manner the given \hyperlink{class_h_x711}{H\+X711} device. 
+
+\begin{DoxyReturn}{Returns}
+\hyperlink{class_h_x711}{H\+X711} A\+DC value (24 bit cast into a 32 bit unsigned integer) 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/\+Users/\+Cedric/\+Documents/\+Programmation/\+P\+I4\+\_\+\+A\+E\+R/\+Platform\+I\+O Teensy 35/src/H\+X711.\+hpp\item 
+/\+Users/\+Cedric/\+Documents/\+Programmation/\+P\+I4\+\_\+\+A\+E\+R/\+Platform\+I\+O Teensy 35/src/H\+X711.\+cpp\end{DoxyCompactItemize}
