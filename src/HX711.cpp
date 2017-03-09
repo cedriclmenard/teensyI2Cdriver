@@ -1,5 +1,8 @@
 #include "HX711.hpp"
 
+#define startPIT3() PIT_TCTRL3 |= PIT_TCTRL_TEN
+#define stopPIT3() PIT_TCTRL3 &= ~PIT_TCTRL_TEN
+
 enum PIT_STATE {
   RISING_EDGE,
   FALLING_EDGE
@@ -12,7 +15,7 @@ struct {
   uint32_t SCKPin;
 } pit3_pins;
 
-uint8_t newDataReady = 0;
+volatile uint8_t newDataReady = 0;
 
 HX711::HX711(uint32_t* DATAOUTPort, uint32_t DATAOUTPin, uint32_t* SCKPort,
   uint32_t SCKPin, HX711Gain gain) : _DATAOUTPort(DATAOUTPort), _SCKPort(SCKPort),
@@ -29,7 +32,10 @@ HX711::HX711(uint32_t* DATAOUTPort, uint32_t DATAOUTPin, uint32_t* SCKPort,
   PIT_LDVAL3 = F_BUS/1000000 - 1; // Sets to interrupt each 1 us
 
   // Enable Interrupts
+  PIT_TFLG3 |= PIT_TFLG_TIF;
   PIT_TCTRL3 |= PIT_TCTRL_TIE;
+
+  // TODO: Do a single read to set gain before first real read call
 }
 
 // TODO: Remove copying of DATAOUT Port and Pin, not useful
@@ -40,12 +46,18 @@ uint32_t HX711::blockingRead() {
   pit3_pins.SCKPort = _SCKPort;
   pit3_pins.SCKPin = _SCKPin;
 
-  // TODO: Start timer
+
   uint8_t i = 0;
   uint32_t value = 0;
+  pit_state = FALLING_EDGE;
+
+  // Start timer
+  startPIT3();
   while (i < 24) {
     while (newDataReady == 0);
     newDataReady = 0;
+
+    // Reads input port
     value |= ( ((*pit3_pins.DATAOUTPort) >> pit3_pins.DATAOUTPin) << i );
     i++;
   }
@@ -54,11 +66,15 @@ uint32_t HX711::blockingRead() {
     newDataReady = 0;
     i++;
   }
-  // TODO: Stop Timer
+  // Stop Timer
+  stopPIT3();
   return value;
 }
 
 void pit3_isr() {
+  // Clear interrupt
+  PIT_TFLG3 |= PIT_TFLG_TIF;
+
   if(pit_state == RISING_EDGE){
     pit_state = FALLING_EDGE;
     // Toggle pin off;
