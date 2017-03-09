@@ -52,7 +52,7 @@ public:
      \pre The device must be initialized and connected
      \return void
   */
-  void readDataRegisters(accel_temp_gyro_t data);
+  accel_temp_gyro_t readDataRegisters();
 
   /*!
      \brief Initialize the device to the default clock source (internal).

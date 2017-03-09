@@ -102,6 +102,14 @@ void BlockingI2Cdev::readRegisterBurst(uint8_t reg, uint8_t *data, uint32_t leng
 BlockingI2Cdev::BlockingI2Cdev(uint8_t address) : _address(address) {
 }
 
+uint8_t BlockingI2Cdev::getAddress() {
+  return _address;
+}
+void BlockingI2Cdev::setAddress(uint8_t address) {
+  _address = address;
+}
+
+
 void I2Cdev::initializeI2C0(uint32_t frequency) { // static
   // Enable GPIO
   SIM_SCGC5 |= SIM_SCGC5_PORTA | SIM_SCGC5_PORTB | SIM_SCGC5_PORTC | SIM_SCGC5_PORTD | SIM_SCGC5_PORTE;

@@ -1,6 +1,6 @@
 #include "MPU9250_I2C.hpp"
 #define NUM_I2C_CALLBACKS 16
-#define MUXADD 0x70
+#define MUXADD (uint8_t)0x70
 
 
 I2Cdev i2c = I2Cdev::instance();
@@ -100,8 +100,9 @@ void MPU9250_I2C_BLOCKING::readDataFIFO(uint8_t dataBuffer[], uint32_t numberOfV
   _dev.readRegisterBurst(MPU9250_FIFO_R_W, dataBuffer, numberOfValues);
 }
 
-void MPU9250_I2C_BLOCKING::readDataRegisters(accel_temp_gyro_t data) {
+accel_temp_gyro_t MPU9250_I2C_BLOCKING::readDataRegisters() {
   setMuxToCurrentAddress();
+  accel_temp_gyro_t data;
   data.reg.x_accel_h = _dev.readRegister(MPU9250_ACCEL_XOUT_H);
   data.reg.x_accel_l = _dev.readRegister(MPU9250_ACCEL_XOUT_L);
   data.reg.y_accel_h = _dev.readRegister(MPU9250_ACCEL_YOUT_H);
@@ -116,6 +117,7 @@ void MPU9250_I2C_BLOCKING::readDataRegisters(accel_temp_gyro_t data) {
   data.reg.y_gyro_l = _dev.readRegister(MPU9250_GYRO_YOUT_L);
   data.reg.z_gyro_h = _dev.readRegister(MPU9250_GYRO_ZOUT_H);
   data.reg.z_gyro_l = _dev.readRegister(MPU9250_GYRO_ZOUT_L);
+  return data;
 }
 
 
@@ -145,6 +147,7 @@ void MPU9250_I2C_BLOCKING::initialize() {
 
   // Set FSYNC
   // TODO: Set FSYNC
+  // TODO: Enable FIFO
 }
 
 void MPU9250_I2C_BLOCKING::setMuxToCurrentAddress() {
