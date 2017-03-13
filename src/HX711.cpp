@@ -35,7 +35,8 @@ HX711::HX711(uint32_t* DATAOUTPort, uint32_t DATAOUTPin, uint32_t* SCKPort,
   PIT_TFLG3 |= PIT_TFLG_TIF;
   PIT_TCTRL3 |= PIT_TCTRL_TIE;
 
-  // TODO: Do a single read to set gain before first real read call
+  // Single read to set gain before first real read call
+  blockingRead();
 }
 
 // TODO: Remove copying of DATAOUT Port and Pin, not useful
