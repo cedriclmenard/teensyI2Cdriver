@@ -39,7 +39,7 @@ HX711::HX711(uint32_t* DATAOUTPort, uint32_t DATAOUTPin, uint32_t* SCKPort,
 }
 
 // TODO: Remove copying of DATAOUT Port and Pin, not useful
-uint32_t HX711::blockingRead() {
+int32_t HX711::blockingRead() {
   // Set to currently serving HX711 pins
   pit3_pins.DATAOUTPort = _DATAOUTPort;
   pit3_pins.DATAOUTPin = _DATAOUTPin;
@@ -48,7 +48,7 @@ uint32_t HX711::blockingRead() {
 
 
   uint8_t i = 0;
-  uint32_t value = 0;
+  int32_t value = 0;
   pit_state = FALLING_EDGE;
 
   // Start timer

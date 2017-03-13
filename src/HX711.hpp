@@ -42,7 +42,7 @@ public:
      \brief Reads in a blocking manner the given HX711 device
      \return HX711 ADC value (24 bit cast into a 32 bit unsigned integer)
   */
-  uint32_t blockingRead();
+  int32_t blockingRead();
 };
 
 #endif
