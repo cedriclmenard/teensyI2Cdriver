@@ -6,6 +6,7 @@
 #include "kinetis.h"
 #include "I2Cdev.hpp"
 #include "types.h"
+#include "Arduino.h"
 
 // Multiplexed MPU9250_I2C class
 class MPU9250_I2C {

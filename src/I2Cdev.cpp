@@ -1,5 +1,7 @@
 #include "I2Cdev.hpp"
 
+volatile uint8_t ack = 0;
+
 // Include assembly symbols
 void dummy_read_I2C_data(volatile uint8_t *i2c_d){ // This is dark magic
   uint32_t dummy;
@@ -14,28 +16,29 @@ void dummy_read_I2C_data(volatile uint8_t *i2c_d){ // This is dark magic
   I2C0_C1 &= ~I2C_C1_TX;
 #define enableAck() I2C0_C1 &= ~I2C_C1_TXAK;
 #define disableAck() I2C0_C1 |= I2C_C1_TXAK;
-#define writeByte(data) I2C0_D = data
+#define writeByte(data) I2C0_D = data;
 #define readByte() I2C0_D
 #define repeatedStartSignal() I2C0_C1 |= I2C_C1_RSTA
 #define receiveMode() I2C0_C1 &= ~I2C_C1_TX;\
   I2C0_C1 |= I2C_C1_TXAK
-#define clearInterrupt() I2C0_S &= ~I2C_S_IICIF;
+#define clearInterrupt() I2C0_S |= I2C_S_IICIF
 
 
 
 
 void BlockingI2Cdev::waitAck() {
-  while ((I2C0_S & I2C_S_IICIF) == 0) {
+  while ( (I2C0_S & I2C_S_IICIF) == 0) {
     // Wait
+    //Serial.print("bleh");
   }
-  I2C0_S |= I2C_S_IICIF;
+  clearInterrupt();
 }
 
 void BlockingI2Cdev::writeRegister(uint8_t reg,uint8_t data) {
   const uint8_t addr = (this->_address << 1);
   startSignal();
   writeByte(addr);
-  waitAck();
+  waitAck(); // MARK: NOT WORKING
   writeByte(data);
   waitAck();
   stopSignal();
@@ -43,10 +46,12 @@ void BlockingI2Cdev::writeRegister(uint8_t reg,uint8_t data) {
 
 uint8_t BlockingI2Cdev::readRegister(uint8_t reg) {
   startSignal();
-  writeByte((_address << 1) | 0x0);
+  writeByte((_address << 1));
   waitAck();
+  //Serial.println("c");
   writeByte(reg);
   waitAck();
+  Serial.println("d");
   repeatedStartSignal();
   writeByte((_address << 1) | 0x1);
   waitAck();
@@ -280,8 +285,16 @@ void I2Cdev::initializeI2C0(uint32_t frequency) { // static
 #error "F_BUS must be 120, 108, 96, 9, 80, 72, 64, 60, 56, 54, 48, 40, 36, 24, 16, 8, 4 or 2 MHz"
 #endif
 
+  // Enable interrupt
+  I2C0_C1 |= I2C_C1_IICIE;
+
+  // Clear pending interrupt triggered when enabling interrupt
+  I2C0_S |= I2C_S_IICIF;
+
   // Enable I2C0
   I2C0_C1 |= I2C_C1_IICEN;
+
+
 
 }
 
@@ -456,7 +469,14 @@ void I2Cdev::setAddress(uint8_t address) {
 
 
 
-void i2c0_isr(){
-  clearInterrupt();
-  I2Cdev::instance().callback();
-}
+// void i2c0_isr(){
+//   clearInterrupt();
+//   I2Cdev::instance().callback();
+// }
+
+// void i2c0_isr() {
+//   if (I2C0_S & I2C_S_IICIF) {
+//     ack = 1;
+//   }
+//   I2C0_S |= I2C_S_IICIF;
+// }

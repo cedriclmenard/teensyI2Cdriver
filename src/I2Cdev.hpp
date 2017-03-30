@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include "kinetis.h"
+#include "Arduino.h"
 
 #define NUM_I2C_CALLBACKS 16
 #define I2C_RW_BUFFER_SIZE 64
@@ -99,7 +100,7 @@ public:
 
 
 
-//void i2c0_isr();
+extern "C" void i2c0_isr(void);
 
 
 

@@ -3,7 +3,7 @@
 #define MUXADD (uint8_t)0x70
 
 
-I2Cdev i2c = I2Cdev::instance();
+//static I2Cdev i2c = I2Cdev::instance();
 
 void managingCallback(uint8_t *data, uint32_t length);
 
@@ -36,6 +36,7 @@ struct I2CServingQueue {
 
 
   I2CServingQueue& operator++() {
+    static I2Cdev i2c = I2Cdev::instance();
 
     #ifdef DEBUG
     i2c0_callbacks[currentlyServing] = NULL;
@@ -84,7 +85,7 @@ void managingCallback(uint8_t *data, uint32_t length) {
 // MARK: BlockingI2Cdev
 
 MPU9250_I2C_BLOCKING::MPU9250_I2C_BLOCKING(uint8_t muxAddress){
-  _muxAddress = (muxAddress > 7) ? 7 : muxAddress;
+  _muxAddress = 1 << ((muxAddress > 7) ? 7 : muxAddress);
 }
 
 uint32_t MPU9250_I2C_BLOCKING::getNumberOfAvailableValueToRead(){
@@ -125,7 +126,7 @@ void MPU9250_I2C_BLOCKING::initialize() {
   setMuxToCurrentAddress();
   // Set clock source and sleep disabled -------
   uint8_t regVal = _dev.readRegister(MPU9250_PWR_MGMT_1);
-
+  //uint8_t regVal = _dev.readRegister(0x3B);
   regVal &= ~0x7; // Mask for 3 first bits, set clock source to internal
   regVal &= ~0x40; // Mask for bit 6, sleep disabled
 
