@@ -4,17 +4,23 @@
 #include "Arduino.h"
 #include "I2Cdev.hpp"
 #include "MPU9250_I2C.hpp"
+#include "MPU9250_Wire.hpp"
 #include "types.h"
 #include <stdlib.h>
+#include "KMZ60.hpp"
 
 //MPU9250_I2C_BLOCKING dev = MPU9250_I2C_BLOCKING(0);
-BlockingI2Cdev dev = BlockingI2Cdev(MPU9250_I2C_ADDRESS);
+//BlockingI2Cdev dev = BlockingI2Cdev(MPU9250_I2C_ADDRESS);
+
+MPU9250_Wire_BLOCKING dev = MPU9250_Wire_BLOCKING(0);
+
+//KMZ60 kmz = KMZ60(14,15);
 
 void setup()
 {
   // initialize LED digital pin as an output.
-  pinMode(LED_BUILTIN, OUTPUT);
-  I2Cdev::initializeI2C0(100000);
+  // pinMode(LED_BUILTIN, OUTPUT);
+  // I2Cdev::initializeI2C0(100000);
 
 
   Serial.begin(38400);
@@ -28,32 +34,64 @@ void setup()
 
 void loop()
 {
-  //digitalWrite(LED_BUILTIN,HIGH);
-  //Serial.println("Hello");
-  //accel_temp_gyro_t result = dev.readDataRegisters();
-  //int x_l = dev.readRegister(0x3C);
-  dev.setAddress(0x70);  // MUX address
-  dev.write(1);
-  Serial.println("b");
-  dev.setAddress(MPU9250_I2C_ADDRESS);
-  uint8_t x_l = dev.readRegister((uint8_t)0x3C);
-  Serial.println(x_l);
-  //char buf[10];
-  //itoa(result.value.x_accel,buf,10);
-  //Serial.println(result.value.x_accel);
+  // uint32_t vout1 = analogRead(14);
+  // uint32_t vout2 = analogRead(15);
+  // uint32_t vtemp = analogRead(16);
+  // delay(50);
+  // vout1 += analogRead(14);
+  // vout2 += analogRead(15);
+  // vtemp += analogRead(16);
+  // delay(50);
+  // vout1 += analogRead(14);
+  // vout2 += analogRead(15);
+  // vtemp += analogRead(16);
+  // delay(50);
+  // vout1 += analogRead(14);
+  // vout2 += analogRead(15);
+  // vtemp += analogRead(16);
+  // delay(50);
+  // vout1 += analogRead(14);
+  // vout2 += analogRead(15);
+  // vtemp += analogRead(16);
+  // delay(50);
+  // vout1 += analogRead(14);
+  // vout2 += analogRead(15);
+  // vtemp += analogRead(16);
+  // vout1 = vout1/6;
+  // vout2 = vout2/6;
+  // vtemp = vtemp/6;
+  //
+  // double v1 = (double)vout1/1024 - 0.5;
+  // double v2 = (double)vout2/1024 - 0.5;
+  // double a = atan(v2/v1)/3.141596*180;
 
-  // turn the LED on (HIGH is the voltage level)
-  //digitalWrite(LED_BUILTIN, HIGH);
+  // Serial.print("Alpha = ");
+  // Serial.print(kmz.readAngleDeg());
+  // //Serial.print(v1);
+  // //Serial.print(", Vout2 = ");
+  // //Serial.print(v2);
+  // Serial.println("°");
+  // //Serial.printf("Vout1 = %1.5f, Vout2 = %1.5f, Vtemp = %i\n", v1, v2, vtemp);
+  // delay(500);
 
-  // wait for a second
-  //delay(1000);
-
-  // turn the LED off by making the voltage LOW
-  //digitalWrite(LED_BUILTIN, LOW);
-
-   // wait for a second
+  //accel_temp_gyro_t data = dev.readDataRegisters();
+  //Serial.println(data.value.x_accel);
+  // dev.setMuxToCurrentAddress();
+  // uint8_t val[2];
+  // val[0] = readRegister(0x68, 0x3C);
+  // val[1] = readRegister(0x68, 0x3B);
+  // int16_t res = ((uint16_t) val[1] << 8) | val[0];
+  // Serial.println(res);
+  // int16_t r = dev.readDataRegisters().value.x_accel;
+  accel_temp_gyro_t val = dev.readDataRegisters();
+  Serial.print("x = ");
+  Serial.print(((double)val.value.x_accel)/65535*16);
+  Serial.print(", y = ");
+  Serial.print(((double)val.value.y_accel)/65535*16);
+  Serial.print(", z = ");
+  Serial.print(((double)val.value.z_accel)/65535*16);
+  Serial.println();
+  //Serial.print(" ");
+  //Serial.println(val[1]);
   delay(1000);
-
-
-
 }

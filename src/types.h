@@ -41,24 +41,24 @@ union word_t
 union accel_temp_gyro_t
 {
   uint8_t b[14];
-  struct
+  __attribute__((packed)) struct
   {
-    uint8_t x_accel_h;
     uint8_t x_accel_l;
-    uint8_t y_accel_h;
+    uint8_t x_accel_h;
     uint8_t y_accel_l;
-    uint8_t z_accel_h;
+    uint8_t y_accel_h;
     uint8_t z_accel_l;
-    uint8_t t_h;
+    uint8_t z_accel_h;
     uint8_t t_l;
-    uint8_t x_gyro_h;
+    uint8_t t_h;
     uint8_t x_gyro_l;
-    uint8_t y_gyro_h;
+    uint8_t x_gyro_h;
     uint8_t y_gyro_l;
-    uint8_t z_gyro_h;
+    uint8_t y_gyro_h;
     uint8_t z_gyro_l;
+    uint8_t z_gyro_h;
   } reg;
-  struct
+  __attribute__((packed)) struct
   {
     int16_t x_accel;
     int16_t y_accel;
@@ -73,22 +73,22 @@ union accel_temp_gyro_t
 union accel_gyro_t
 {
   uint8_t b[12];
-  struct
+  __attribute__((packed)) struct
   {
-    uint8_t x_accel_h;
     uint8_t x_accel_l;
-    uint8_t y_accel_h;
+    uint8_t x_accel_h;
     uint8_t y_accel_l;
-    uint8_t z_accel_h;
+    uint8_t y_accel_h;
     uint8_t z_accel_l;
-    uint8_t x_gyro_h;
+    uint8_t z_accel_h;
     uint8_t x_gyro_l;
-    uint8_t y_gyro_h;
+    uint8_t x_gyro_h;
     uint8_t y_gyro_l;
-    uint8_t z_gyro_h;
+    uint8_t y_gyro_h;
     uint8_t z_gyro_l;
+    uint8_t z_gyro_h;
   } reg;
-  struct
+  __attribute__((packed)) struct
   {
     int16_t x_accel;
     int16_t y_accel;

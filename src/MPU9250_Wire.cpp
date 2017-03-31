@@ -52,8 +52,8 @@ MPU9250_Wire_BLOCKING::~MPU9250_Wire_BLOCKING() {
   }
 }
 
-MPU9250_Wire_BLOCKING::setMuxToCurrentAddress() {
-  Wire.beginTransmission(MUXADD)
+void MPU9250_Wire_BLOCKING::setMuxToCurrentAddress() {
+  Wire.beginTransmission(MUXADD);
   Wire.write(_muxAddress);
   Wire.endTransmission();
 }
@@ -119,10 +119,4 @@ void MPU9250_Wire_BLOCKING::initialize() {
   // Set FSYNC
   // TODO: Set FSYNC
   // TODO: Enable FIFO
-}
-
-void MPU9250_Wire_BLOCKING::setMuxToCurrentAddress() {
-  Wire.beginTransmission(MUXADD);
-  Wire.write(_muxAddress);
-  Wire.endTransmission();
 }

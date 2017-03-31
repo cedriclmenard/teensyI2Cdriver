@@ -7,20 +7,23 @@
 #include "I2Cdev.hpp"
 #include "types.h"
 #include "Arduino.h"
+#include "Wire.h"
 
 class MPU9250_Wire_BLOCKING {
 private:
   uint8_t _muxAddress;
 
-  void setMuxToCurrentAddress();
-public:
 
+public:
+  void setMuxToCurrentAddress();
   /*!
      \brief MPU9250 blocking device constructor
      \param muxAddress Address between 0 and 7 to use for multiplexing
      This class serves as an independent device to communicate with.
   */
   MPU9250_Wire_BLOCKING(uint8_t muxAddress);
+
+  ~MPU9250_Wire_BLOCKING();
 
   /*!
      \brief Return the number of bytes available to read in the FIFO
@@ -54,6 +57,9 @@ public:
 
 
 };
+
+uint8_t readRegister(uint8_t address,uint8_t reg);
+void writeRegister(uint8_t address, uint8_t reg, uint8_t data);
 
 
 #endif
