@@ -123,8 +123,8 @@ void I2Cdev::initializeI2C0(uint32_t frequency) { // static
   SIM_SCGC4 |= SIM_SCGC4_I2C0;
 
   // Alt2 for PTB3 and PTB2 (G11 and G12) is I2C0
-  PORTB_PCR3 |= PORT_PCR_MUX(2) | PORT_PCR_DSE;
-  PORTB_PCR2 |= PORT_PCR_MUX(2) | PORT_PCR_DSE;
+  PORTB_PCR3 |= PORT_PCR_MUX(2) | PORT_PCR_DSE | PORT_PCR_SRE | PORT_PCR_DSE;;
+  PORTB_PCR2 |= PORT_PCR_MUX(2) | PORT_PCR_DSE | PORT_PCR_SRE | PORT_PCR_DSE;;
 
   // Setup Clock
   if (!(SIM_SCGC4 & SIM_SCGC4_I2C0)) return;
@@ -292,7 +292,8 @@ void I2Cdev::initializeI2C0(uint32_t frequency) { // static
   I2C0_S |= I2C_S_IICIF;
 
   // Enable I2C0
-  I2C0_C1 |= I2C_C1_IICEN;
+  I2C0_C2 = I2C_C2_HDRS;
+	I2C0_C1 = I2C_C1_IICEN;
 
 
 
