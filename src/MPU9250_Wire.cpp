@@ -110,11 +110,11 @@ void MPU9250_Wire_BLOCKING::initialize() {
   writeRegister(MPU9250_I2C_ADDRESS, MPU9250_GYRO_CONFIG, regVal);
 
   // Set accel range -------
-  regVal = readRegister(MPU9250_I2C_ADDRESS, MPU9250_GYRO_CONFIG);
+  regVal = readRegister(MPU9250_I2C_ADDRESS, MPU9250_ACCEL_CONFIG);
 
   regVal |= 0x18; // Mask for bits 3:4, set to full scale (16g)
 
-  writeRegister(MPU9250_I2C_ADDRESS, MPU9250_GYRO_CONFIG, regVal);
+  writeRegister(MPU9250_I2C_ADDRESS, MPU9250_ACCEL_CONFIG, regVal);
 
   // Set FSYNC
   // TODO: Set FSYNC

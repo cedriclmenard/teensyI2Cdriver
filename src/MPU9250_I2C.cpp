@@ -140,11 +140,11 @@ void MPU9250_I2C_BLOCKING::initialize() {
   _dev.writeRegister(MPU9250_GYRO_CONFIG, regVal);
 
   // Set accel range -------
-  regVal = _dev.readRegister(MPU9250_GYRO_CONFIG);
+  regVal = _dev.readRegister(MPU9250_ACCEL_CONFIG);
 
   regVal |= 0x18; // Mask for bits 3:4, set to full scale (16g)
 
-  _dev.writeRegister(MPU9250_GYRO_CONFIG, regVal);
+  _dev.writeRegister(MPU9250_ACCEL_CONFIG, regVal);
 
   // Set FSYNC
   // TODO: Set FSYNC

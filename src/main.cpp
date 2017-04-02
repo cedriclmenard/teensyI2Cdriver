@@ -22,7 +22,7 @@ void setup()
   // pinMode(LED_BUILTIN, OUTPUT);
   // I2Cdev::initializeI2C0(100000);
 
-
+  dev.initialize();
   Serial.begin(38400);
 
   delay(3000);
@@ -85,11 +85,17 @@ void loop()
   // int16_t r = dev.readDataRegisters().value.x_accel;
   accel_temp_gyro_t val = dev.readDataRegisters();
   Serial.print("x = ");
-  Serial.print(((double)val.value.x_accel)/65535*16);
+  Serial.print(((double)val.value.x_accel)/32768.0*16);
   Serial.print(", y = ");
-  Serial.print(((double)val.value.y_accel)/65535*16);
+  Serial.print(((double)val.value.y_accel)/32768.0*16);
   Serial.print(", z = ");
-  Serial.print(((double)val.value.z_accel)/65535*16);
+  Serial.print(((double)val.value.z_accel)/32768.0*16);
+  Serial.print(", x gyro = ");
+  Serial.print(((double)val.value.x_gyro)/32768.0*2000);
+  Serial.print(", y gyro = ");
+  Serial.print(((double)val.value.y_gyro)/32768.0*2000);
+  Serial.print(", z gyro = ");
+  Serial.print(((double)val.value.z_gyro)/32768.0*2000);
   Serial.println();
   //Serial.print(" ");
   //Serial.println(val[1]);
