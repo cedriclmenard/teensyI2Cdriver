@@ -71,6 +71,13 @@ void MPU9250_Wire_BLOCKING::readDataFIFO(uint8_t dataBuffer[], uint32_t numberOf
   readRegisterBurst(MPU9250_I2C_ADDRESS, MPU9250_FIFO_R_W, dataBuffer, numberOfValues);
 }
 
+accel_temp_gyro_t MPU_9250_Wire_BLOCKING::readDataFIFOBatch() {
+  accel_temp_gyro_t data;
+  setMuxToCurrentAddress();
+  readRegisterBurst(MPU9250_I2C_ADDRESS, MPU9250_FIFO_R_W, data.b, 14); // 14 values to read
+  return data;
+}
+
 accel_temp_gyro_t MPU9250_Wire_BLOCKING::readDataRegisters() {
   setMuxToCurrentAddress();
   accel_temp_gyro_t data;
