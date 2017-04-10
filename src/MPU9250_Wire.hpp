@@ -41,6 +41,13 @@ public:
   void readDataFIFO(uint8_t dataBuffer[], uint32_t numberOfValues);
 
   /*!
+  Added this to header to be available in main. Simplifies the use of
+  readDataFIFO as all the information is in the returned value
+  */
+  accel_temp_gyro_t readDataFIFOBatch();
+
+
+  /*!
      \brief Read each individual data registers on the device, without using the FIFO buffer
      \param data Data structure to write the received data to
      \pre The device must be initialized and connected
