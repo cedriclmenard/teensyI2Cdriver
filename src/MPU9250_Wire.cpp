@@ -124,6 +124,16 @@ void MPU9250_Wire_BLOCKING::initialize() {
   writeRegister(MPU9250_I2C_ADDRESS, MPU9250_ACCEL_CONFIG, regVal);
 
   // Set FSYNC
-  // TODO: Set FSYNC
-  // TODO: Enable FIFO
+  regVal = readRegister(MPU9250_I2C_ADDRESS, MPU9250_SMPLRT_DIV);
+  regVal |= 1 << 3; // Set FSYNC to temperature output
+  writeRegister(MPU9250_I2C_ADDRESS, MPU9250_SMPLRT_DIV, regVal);
+
+  // Enable FIFO
+  regVal = readRegister(MPU9250_I2C_ADDRESS, MPU9250_CONFIG);
+  regVal |= 1 << 7; // Set FIFO_MODE to not overwrite
+  writeRegister(MPU9250_I2C_ADDRESS, MPU9250_CONFIG, regVal);
+
+  regVal = readRegister(MPU9250_I2C_ADDRESS, MPU9250_FIFO_EN);
+  regVal |= 0xFF << 3; // Set FIFO to save accel, gyro and temp
+  writeRegister(MPU9250_I2C_ADDRESS, MPU9250_FIFO_EN, regVal);
 }
