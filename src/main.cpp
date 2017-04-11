@@ -39,6 +39,13 @@ double angleAileronRad;
 
 //KMZ60 kmz = KMZ60(14,15);
 
+
+// MARK: Initialize HX711
+GPIOE_PDDR &= ~(1<<26);
+GPIOA_PDDR |= (1<<5);
+HX711 hx711Dev = HX711(GPIOE_PDOR, 26, GPIOA_PDIR,
+  5, X128);
+
 void setup()
 {
   // initialize LED digital pin as an output.
