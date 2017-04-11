@@ -9,6 +9,12 @@
 #include <stdlib.h>
 #include "KMZ60.hpp"
 
+// MARK: Supporting functions
+void sendFSYNC(uint8_t fsyncPin) {
+  digitalWrite(uint8_t fsyncPin, HIGH);
+  digitalWrite(uint8_t fsyncPin, LOW);
+}
+
 //MPU9250_I2C_BLOCKING dev = MPU9250_I2C_BLOCKING(0);
 //BlockingI2Cdev dev = BlockingI2Cdev(MPU9250_I2C_ADDRESS);
 

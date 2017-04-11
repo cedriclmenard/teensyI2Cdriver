@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>PI4_AER_Code_CU: File List</title>
+<title>PI4_AER_Code_CU: /Users/Cedric/Documents/Programmation/PI4_AER/PlatformIO Teensy 35/src/KMZ60.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -61,7 +61,7 @@ $(function() {
   </div>
 </div>
 <script type="text/javascript">
-$(document).ready(function(){initNavTree('files.html','');});
+$(document).ready(function(){initNavTree('_k_m_z60_8hpp_source.html','');});
 </script>
 <div id="doc-content">
 <!-- window showing the filter options -->
@@ -80,26 +80,16 @@ $(document).ready(function(){initNavTree('files.html','');});
 
 <div class="header">
   <div class="headertitle">
-<div class="title">File List</div>  </div>
+<div class="title">KMZ60.hpp</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock">Here is a list of all documented files with brief descriptions:</div><div class="directory">
-<div class="levels">[detail level <span onclick="javascript:toggleLevel(1);">1</span><span onclick="javascript:toggleLevel(2);">2</span>]</div><table class="directory">
-<tr id="row_0_" class="even"><td class="entry"><span style="width:0px;display:inline-block;">&#160;</span><span id="arr_0_" class="arrow" onclick="toggleFolder('0_')">&#9660;</span><span id="img_0_" class="iconfopen" onclick="toggleFolder('0_')">&#160;</span><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html" target="_self">src</a></td><td class="desc"></td></tr>
-<tr id="row_0_0_"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><a href="_h_x711_8hpp_source.html"><span class="icondoc"></span></a><b>HX711.hpp</b></td><td class="desc"></td></tr>
-<tr id="row_0_1_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><a href="_i2_cdev_8hpp_source.html"><span class="icondoc"></span></a><b>I2Cdev.hpp</b></td><td class="desc"></td></tr>
-<tr id="row_0_2_"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><a href="_k_m_z60_8hpp_source.html"><span class="icondoc"></span></a><b>KMZ60.hpp</b></td><td class="desc"></td></tr>
-<tr id="row_0_3_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><a href="mpu9250_8h_source.html"><span class="icondoc"></span></a><b>mpu9250.h</b></td><td class="desc"></td></tr>
-<tr id="row_0_4_"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><a href="_m_p_u9250___i2_c_8hpp_source.html"><span class="icondoc"></span></a><b>MPU9250_I2C.hpp</b></td><td class="desc"></td></tr>
-<tr id="row_0_5_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><a href="_m_p_u9250___wire_8hpp_source.html"><span class="icondoc"></span></a><b>MPU9250_Wire.hpp</b></td><td class="desc"></td></tr>
-<tr id="row_0_6_"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><a href="types_8h_source.html"><span class="icondoc"></span></a><b>types.h</b></td><td class="desc"></td></tr>
-</table>
-</div><!-- directory -->
-</div><!-- contents -->
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef KMZ60_HPP</span></div><div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define KMZ60_HPP</span></div><div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;</div><div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;stdint.h&gt;</span></div><div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;Arduino.h&gt;</span></div><div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;</div><div class="line"><a name="l00007"></a><span class="lineno"><a class="line" href="class_k_m_z60.html">    7</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_k_m_z60.html">KMZ60</a> {</div><div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;  uint32_t _VOUT1_PIN_TEENSY;</div><div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;  uint32_t _VOUT2_PIN_TEENSY;</div><div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="keyword">public</span>:</div><div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;  <a class="code" href="class_k_m_z60.html">KMZ60</a>(uint32_t VOUT1_PIN_TEENSY, uint32_t VOUT2_PIN_TEENSY);</div><div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;  <span class="keywordtype">double</span> readAngleRad();</div><div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;  <span class="keywordtype">double</span> readAngleDeg();</div><div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;</div><div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;};</div><div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;</div><div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;</div><div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#endif</span></div><div class="ttc" id="class_k_m_z60_html"><div class="ttname"><a href="class_k_m_z60.html">KMZ60</a></div><div class="ttdef"><b>Definition:</b> KMZ60.hpp:7</div></div>
+</div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
+    <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><b>KMZ60.hpp</b></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>

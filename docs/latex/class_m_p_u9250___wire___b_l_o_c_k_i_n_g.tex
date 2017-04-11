@@ -1,0 +1,131 @@
+\hypertarget{class_m_p_u9250___wire___b_l_o_c_k_i_n_g}{}\section{M\+P\+U9250\+\_\+\+Wire\+\_\+\+B\+L\+O\+C\+K\+I\+NG Class Reference}
+\label{class_m_p_u9250___wire___b_l_o_c_k_i_n_g}\index{M\+P\+U9250\+\_\+\+Wire\+\_\+\+B\+L\+O\+C\+K\+I\+NG@{M\+P\+U9250\+\_\+\+Wire\+\_\+\+B\+L\+O\+C\+K\+I\+NG}}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_m_p_u9250___wire___b_l_o_c_k_i_n_g_a5b9e5a0fe968d941c0bf81174bb087e0}\label{class_m_p_u9250___wire___b_l_o_c_k_i_n_g_a5b9e5a0fe968d941c0bf81174bb087e0}} 
+void {\bfseries set\+Mux\+To\+Current\+Address} ()
+\item 
+\hyperlink{class_m_p_u9250___wire___b_l_o_c_k_i_n_g_a998ae4c4645f79925e49d5a68511bfd5}{M\+P\+U9250\+\_\+\+Wire\+\_\+\+B\+L\+O\+C\+K\+I\+NG} (uint8\+\_\+t mux\+Address)
+\begin{DoxyCompactList}\small\item\em M\+P\+U9250 blocking device constructor. \end{DoxyCompactList}\item 
+uint32\+\_\+t \hyperlink{class_m_p_u9250___wire___b_l_o_c_k_i_n_g_a14dae485bfe34ee6ef25c9338fca2e6c}{get\+Number\+Of\+Available\+Value\+To\+Read} ()
+\begin{DoxyCompactList}\small\item\em Return the number of bytes available to read in the F\+I\+FO. \end{DoxyCompactList}\item 
+void \hyperlink{class_m_p_u9250___wire___b_l_o_c_k_i_n_g_a385ee7486440d79931a9d2e7c1c7321b}{read\+Data\+F\+I\+FO} (uint8\+\_\+t data\+Buffer\mbox{[}$\,$\mbox{]}, uint32\+\_\+t number\+Of\+Values)
+\begin{DoxyCompactList}\small\item\em Reads the F\+I\+FO and write this data inside the given buffer. \end{DoxyCompactList}\item 
+\hyperlink{unionaccel__temp__gyro__t}{accel\+\_\+temp\+\_\+gyro\+\_\+t} \hyperlink{class_m_p_u9250___wire___b_l_o_c_k_i_n_g_a800f7076178a747676b0094fd9e89a56}{read\+Data\+F\+I\+F\+O\+Batch} ()
+\begin{DoxyCompactList}\small\item\em Reads the F\+I\+FO and write this data inside a \hyperlink{unionaccel__temp__gyro__t}{accel\+\_\+temp\+\_\+gyro\+\_\+t} one at a time. \end{DoxyCompactList}\item 
+\hyperlink{unionaccel__temp__gyro__t}{accel\+\_\+temp\+\_\+gyro\+\_\+t} \hyperlink{class_m_p_u9250___wire___b_l_o_c_k_i_n_g_a79432cf3440f57dd8fb16d52bc7cf4dd}{read\+Data\+Registers} ()
+\begin{DoxyCompactList}\small\item\em Read each individual data registers on the device, without using the F\+I\+FO buffer. \end{DoxyCompactList}\item 
+void \hyperlink{class_m_p_u9250___wire___b_l_o_c_k_i_n_g_aa62baa380f82620f245015c2c19c8f30}{initialize} ()
+\begin{DoxyCompactList}\small\item\em Initialize the device to the default clock source (internal). \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_m_p_u9250___wire___b_l_o_c_k_i_n_g_a998ae4c4645f79925e49d5a68511bfd5}\label{class_m_p_u9250___wire___b_l_o_c_k_i_n_g_a998ae4c4645f79925e49d5a68511bfd5}} 
+\index{M\+P\+U9250\+\_\+\+Wire\+\_\+\+B\+L\+O\+C\+K\+I\+NG@{M\+P\+U9250\+\_\+\+Wire\+\_\+\+B\+L\+O\+C\+K\+I\+NG}!M\+P\+U9250\+\_\+\+Wire\+\_\+\+B\+L\+O\+C\+K\+I\+NG@{M\+P\+U9250\+\_\+\+Wire\+\_\+\+B\+L\+O\+C\+K\+I\+NG}}
+\index{M\+P\+U9250\+\_\+\+Wire\+\_\+\+B\+L\+O\+C\+K\+I\+NG@{M\+P\+U9250\+\_\+\+Wire\+\_\+\+B\+L\+O\+C\+K\+I\+NG}!M\+P\+U9250\+\_\+\+Wire\+\_\+\+B\+L\+O\+C\+K\+I\+NG@{M\+P\+U9250\+\_\+\+Wire\+\_\+\+B\+L\+O\+C\+K\+I\+NG}}
+\subsubsection{\texorpdfstring{M\+P\+U9250\+\_\+\+Wire\+\_\+\+B\+L\+O\+C\+K\+I\+N\+G()}{MPU9250\_Wire\_BLOCKING()}}
+{\footnotesize\ttfamily M\+P\+U9250\+\_\+\+Wire\+\_\+\+B\+L\+O\+C\+K\+I\+N\+G\+::\+M\+P\+U9250\+\_\+\+Wire\+\_\+\+B\+L\+O\+C\+K\+I\+NG (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{mux\+Address }\end{DoxyParamCaption})}
+
+
+
+M\+P\+U9250 blocking device constructor. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em mux\+Address} & Address between 0 and 7 to use for multiplexing This class serves as an independent device to communicate with. \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_m_p_u9250___wire___b_l_o_c_k_i_n_g_a14dae485bfe34ee6ef25c9338fca2e6c}\label{class_m_p_u9250___wire___b_l_o_c_k_i_n_g_a14dae485bfe34ee6ef25c9338fca2e6c}} 
+\index{M\+P\+U9250\+\_\+\+Wire\+\_\+\+B\+L\+O\+C\+K\+I\+NG@{M\+P\+U9250\+\_\+\+Wire\+\_\+\+B\+L\+O\+C\+K\+I\+NG}!get\+Number\+Of\+Available\+Value\+To\+Read@{get\+Number\+Of\+Available\+Value\+To\+Read}}
+\index{get\+Number\+Of\+Available\+Value\+To\+Read@{get\+Number\+Of\+Available\+Value\+To\+Read}!M\+P\+U9250\+\_\+\+Wire\+\_\+\+B\+L\+O\+C\+K\+I\+NG@{M\+P\+U9250\+\_\+\+Wire\+\_\+\+B\+L\+O\+C\+K\+I\+NG}}
+\subsubsection{\texorpdfstring{get\+Number\+Of\+Available\+Value\+To\+Read()}{getNumberOfAvailableValueToRead()}}
+{\footnotesize\ttfamily uint32\+\_\+t M\+P\+U9250\+\_\+\+Wire\+\_\+\+B\+L\+O\+C\+K\+I\+N\+G\+::get\+Number\+Of\+Available\+Value\+To\+Read (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Return the number of bytes available to read in the F\+I\+FO. 
+
+\begin{DoxyPrecond}{Precondition}
+The device must be initialized and connected 
+\end{DoxyPrecond}
+\begin{DoxyReturn}{Returns}
+Number of bytes available in F\+I\+FO buffer 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_m_p_u9250___wire___b_l_o_c_k_i_n_g_aa62baa380f82620f245015c2c19c8f30}\label{class_m_p_u9250___wire___b_l_o_c_k_i_n_g_aa62baa380f82620f245015c2c19c8f30}} 
+\index{M\+P\+U9250\+\_\+\+Wire\+\_\+\+B\+L\+O\+C\+K\+I\+NG@{M\+P\+U9250\+\_\+\+Wire\+\_\+\+B\+L\+O\+C\+K\+I\+NG}!initialize@{initialize}}
+\index{initialize@{initialize}!M\+P\+U9250\+\_\+\+Wire\+\_\+\+B\+L\+O\+C\+K\+I\+NG@{M\+P\+U9250\+\_\+\+Wire\+\_\+\+B\+L\+O\+C\+K\+I\+NG}}
+\subsubsection{\texorpdfstring{initialize()}{initialize()}}
+{\footnotesize\ttfamily void M\+P\+U9250\+\_\+\+Wire\+\_\+\+B\+L\+O\+C\+K\+I\+N\+G\+::initialize (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Initialize the device to the default clock source (internal). 
+
+\begin{DoxyReturn}{Returns}
+void Setup max range for accel. and gyro. data and disabled sleep. Sets F\+S\+Y\+NC (N/I yet) 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_m_p_u9250___wire___b_l_o_c_k_i_n_g_a385ee7486440d79931a9d2e7c1c7321b}\label{class_m_p_u9250___wire___b_l_o_c_k_i_n_g_a385ee7486440d79931a9d2e7c1c7321b}} 
+\index{M\+P\+U9250\+\_\+\+Wire\+\_\+\+B\+L\+O\+C\+K\+I\+NG@{M\+P\+U9250\+\_\+\+Wire\+\_\+\+B\+L\+O\+C\+K\+I\+NG}!read\+Data\+F\+I\+FO@{read\+Data\+F\+I\+FO}}
+\index{read\+Data\+F\+I\+FO@{read\+Data\+F\+I\+FO}!M\+P\+U9250\+\_\+\+Wire\+\_\+\+B\+L\+O\+C\+K\+I\+NG@{M\+P\+U9250\+\_\+\+Wire\+\_\+\+B\+L\+O\+C\+K\+I\+NG}}
+\subsubsection{\texorpdfstring{read\+Data\+F\+I\+F\+O()}{readDataFIFO()}}
+{\footnotesize\ttfamily void M\+P\+U9250\+\_\+\+Wire\+\_\+\+B\+L\+O\+C\+K\+I\+N\+G\+::read\+Data\+F\+I\+FO (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{data\+Buffer\mbox{[}$\,$\mbox{]},  }\item[{uint32\+\_\+t}]{number\+Of\+Values }\end{DoxyParamCaption})}
+
+
+
+Reads the F\+I\+FO and write this data inside the given buffer. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em data\+Buffer} & Buffer to write the data received \\
+\hline
+\end{DoxyParams}
+\begin{DoxyPrecond}{Precondition}
+The device must be initialized and connected 
+\end{DoxyPrecond}
+\begin{DoxyReturn}{Returns}
+void 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_m_p_u9250___wire___b_l_o_c_k_i_n_g_a800f7076178a747676b0094fd9e89a56}\label{class_m_p_u9250___wire___b_l_o_c_k_i_n_g_a800f7076178a747676b0094fd9e89a56}} 
+\index{M\+P\+U9250\+\_\+\+Wire\+\_\+\+B\+L\+O\+C\+K\+I\+NG@{M\+P\+U9250\+\_\+\+Wire\+\_\+\+B\+L\+O\+C\+K\+I\+NG}!read\+Data\+F\+I\+F\+O\+Batch@{read\+Data\+F\+I\+F\+O\+Batch}}
+\index{read\+Data\+F\+I\+F\+O\+Batch@{read\+Data\+F\+I\+F\+O\+Batch}!M\+P\+U9250\+\_\+\+Wire\+\_\+\+B\+L\+O\+C\+K\+I\+NG@{M\+P\+U9250\+\_\+\+Wire\+\_\+\+B\+L\+O\+C\+K\+I\+NG}}
+\subsubsection{\texorpdfstring{read\+Data\+F\+I\+F\+O\+Batch()}{readDataFIFOBatch()}}
+{\footnotesize\ttfamily \hyperlink{unionaccel__temp__gyro__t}{accel\+\_\+temp\+\_\+gyro\+\_\+t} M\+P\+U9250\+\_\+\+Wire\+\_\+\+B\+L\+O\+C\+K\+I\+N\+G\+::read\+Data\+F\+I\+F\+O\+Batch (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Reads the F\+I\+FO and write this data inside a \hyperlink{unionaccel__temp__gyro__t}{accel\+\_\+temp\+\_\+gyro\+\_\+t} one at a time. 
+
+\begin{DoxyReturn}{Returns}
+\hyperlink{unionaccel__temp__gyro__t}{accel\+\_\+temp\+\_\+gyro\+\_\+t} containing a F\+I\+FO read 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_m_p_u9250___wire___b_l_o_c_k_i_n_g_a79432cf3440f57dd8fb16d52bc7cf4dd}\label{class_m_p_u9250___wire___b_l_o_c_k_i_n_g_a79432cf3440f57dd8fb16d52bc7cf4dd}} 
+\index{M\+P\+U9250\+\_\+\+Wire\+\_\+\+B\+L\+O\+C\+K\+I\+NG@{M\+P\+U9250\+\_\+\+Wire\+\_\+\+B\+L\+O\+C\+K\+I\+NG}!read\+Data\+Registers@{read\+Data\+Registers}}
+\index{read\+Data\+Registers@{read\+Data\+Registers}!M\+P\+U9250\+\_\+\+Wire\+\_\+\+B\+L\+O\+C\+K\+I\+NG@{M\+P\+U9250\+\_\+\+Wire\+\_\+\+B\+L\+O\+C\+K\+I\+NG}}
+\subsubsection{\texorpdfstring{read\+Data\+Registers()}{readDataRegisters()}}
+{\footnotesize\ttfamily \hyperlink{unionaccel__temp__gyro__t}{accel\+\_\+temp\+\_\+gyro\+\_\+t} M\+P\+U9250\+\_\+\+Wire\+\_\+\+B\+L\+O\+C\+K\+I\+N\+G\+::read\+Data\+Registers (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Read each individual data registers on the device, without using the F\+I\+FO buffer. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em data} & Data structure to write the received data to \\
+\hline
+\end{DoxyParams}
+\begin{DoxyPrecond}{Precondition}
+The device must be initialized and connected 
+\end{DoxyPrecond}
+\begin{DoxyReturn}{Returns}
+void 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/\+Users/\+Cedric/\+Documents/\+Programmation/\+P\+I4\+\_\+\+A\+E\+R/\+Platform\+I\+O Teensy 35/src/M\+P\+U9250\+\_\+\+Wire.\+hpp\item 
+/\+Users/\+Cedric/\+Documents/\+Programmation/\+P\+I4\+\_\+\+A\+E\+R/\+Platform\+I\+O Teensy 35/src/M\+P\+U9250\+\_\+\+Wire.\+cpp\end{DoxyCompactItemize}

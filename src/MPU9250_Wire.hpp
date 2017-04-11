@@ -41,8 +41,8 @@ public:
   void readDataFIFO(uint8_t dataBuffer[], uint32_t numberOfValues);
 
   /*!
-  Added this to header to be available in main. Simplifies the use of
-  readDataFIFO as all the information is in the returned value
+    \brief Reads the FIFO and write this data inside a accel_temp_gyro_t one at a time
+    \return accel_temp_gyro_t containing a FIFO read
   */
   accel_temp_gyro_t readDataFIFOBatch();
 
