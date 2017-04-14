@@ -8,6 +8,7 @@
 #include "types.h"
 #include <stdlib.h>
 #include "KMZ60.hpp"
+#include <stdint.h>
 
 // MARK: Supporting functions
 void sendFSYNC(uint8_t fsyncPin) {
