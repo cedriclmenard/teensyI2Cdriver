@@ -27,18 +27,36 @@ MPU9250_Wire_BLOCKING(4), MPU9250_Wire_BLOCKING(5), MPU9250_Wire_BLOCKING(6),
 MPU9250_Wire_BLOCKING(7)};
 
 uint32_t nbOfValues[8]; // One number per IMU
-uint32_t maxNbVal; // Sum of number of values to read. (Worst case)
-uint32_t counterValStored[8]; // One number per IMU
 accel_temp_gyro_t data;
 
 uint32_t VOUT1_PIN_TEENSY = 14;
 uint32_t VOUT2_PIN_TEENSY = 15;
+uint8_t fsyncPin = 5; // Read from global schematic
 
 KMZ60 kmz = KMZ60(VOUT1_PIN_TEENSY, VOUT2_PIN_TEENSY);
 double angleAileronRad;
 
-//KMZ60 kmz = KMZ60(14,15);
+// Need to keep 3 values for each of the 8 IMUS for security check.
+float AccelsMagSquare [8][3]; // Security only needs magnitude square
+float xAccel; // Each IMU read is stored to calculate Magnitude and print
+float yAccel;
+float zAccel;
+float xGyro; // Same as accels
+float yGyro;
+float zGyro;
+float newAccelMagSq; //new magnitude of acceleration square
+int32_t hx711Value;
 
+// WTF: SECUTIRY !!!! SEE VALUES BELOW. WHERE SHOULD WE CHECK?
+// Square of Absolute accel that should not be exceeded by any imu (note Square
+// because root square would be long to compute for nothing, and avoid sign check)
+float accelMaxSquare = 1.0;
+// 4 consecutive increasing maximum should not trigger if last accel is below a
+// certain threshold
+float accelMinSecutiry = 0.1;
+float strainMax; // should that be usefull
+
+//KMZ60 kmz = KMZ60(14,15);
 
 // MARK: Initialize HX711
 GPIOE_PDDR &= ~(1<<26);
@@ -53,9 +71,14 @@ void setup()
   // I2Cdev::initializeI2C0(100000);
 
   // Initialisation des 8 imus
-  for ( int i = 0; i < 8; i = i + 1  ) {
+  for ( uint i = 0; i < 8; i = i + 1  ) {
     imus[i].initialize();
-  }
+    // Needs to initialize all values in AccelsMagSquare, to ensure the shifting
+    // of values when reading doesn't access residual memory
+    for ( uint j = 0; j < 3; j = j + 1  ) { // 3 latest values
+      AccelsMagSquare [i][j] = 0.0;
+    }// end for 3 latest values
+  }// end for 8 IMUS
 
   Serial.begin(38400);
 
@@ -71,74 +94,79 @@ void loop()
   // Programmation du main par Vincent
 
   // 1: Gathering values for 8 IMUs
-  // WTF: What size for arrays containing accel et gyros?
-  maxNbVal = 0 ;
+  // for each IMU, get number of values to read
   for ( int i = 0; i < 8; i = i + 1  ) {
     nbOfValues[i] = imus[i].getNumberOfAvailableValueToRead();
-    maxNbVal = (maxNbVal<nbOfValues[i])?nbOfValues[i]:maxNbVal; ; // Max
-    counterValStored[i] = -1; // Reset of counter for each IMU
   }
-  // For now, worst case considered (All values in register were taken during
-  // the FSYNC). Could be optimized for memory or speed if required. Better
-  // than resizing everytime we add a value?
-  // One colomn for each IMU
-  double xAccel [maxNbVal][8];
-  double yAccel [maxNbVal][8];
-  double zAccel [maxNbVal][8];
-  double xGyro [maxNbVal][8];
-  double yGyro [maxNbVal][8];
-  double zGyro [maxNbVal][8];
+  // for each IMU
   for ( uint i = 0; i < 8; i += 1  ) {
       Serial.print("Reading Imu: ");
       Serial.print(i);
       Serial.println();
       // For the number of values to read for each IMU
-      for (uint j = 0; j < nbOfValues[i]; j += 1){
-        data = imus[i].readDataFIFOBatch();
-        // WTF: data.value ou data.reg?
+      // WTF: nbOfValues[i]/14 to break the for?? getNumberOfAvailableValueToRead()
+      // returns 1, 7 or 14 if one set of value in buffer??
+      for (uint nbVal = 0; nbVal < nbOfValues[i]; nbVal += 1){
+        data = imus[i].readDataFIFOBatch(); // if not SYNCED, no interest
         if (data.value.x_accel & 0x1){ //if value stored while FSYNC on
-          counterValStored[i] += 1; // Add a value reading to that IMU
-          xAccel[counterValStored[i]][i] = ((double)data.value.x_accel)/32768.0*16;
-          yAccel[counterValStored[i]][i] = ((double)data.value.y_accel)/32768.0*16;
-          zAccel[counterValStored[i]][i] = ((double)data.value.z_accel)/32768.0*16;
-          xGyro[counterValStored[i]][i] = ((double)data.value.x_gyro)/32768.0*2000;
-          yGyro[counterValStored[i]][i] = ((double)data.value.y_gyro)/32768.0*2000;
-          zGyro[counterValStored[i]][i] = ((double)data.value.z_gyro)/32768.0*2000;
-          // TEMPORARY PRINT DEBUG PURPOUSE
+
+          xAccel = ((float)data.value.x_accel)/32768.0*16; // new x
+          yAccel = ((float)data.value.y_accel)/32768.0*16; // new y
+          zAccel = ((float)data.value.z_accel)/32768.0*16; // new z
+          newAccelMagSq = xAccel*xAccel+yAccel*yAccel+zAccel*zAccel;
+
+          // Security: if newAccel>accelMax, or (4 consecutive increasing maximums, with the newest > accelMinSecutiry)
+          if ((newAccelMagSq>accelMaxSquare)|| ((AccelsMagSquare [i][2]<AccelsMagSquare [i][1])&(AccelsMagSquare [i][1]<AccelsMagSquare [i][0])&(AccelsMagSquare [i][0]<newAccelMagSq)&(newAccelMagSq>accelMinSecutiry))){
+            // fireSecurity!
+          }
+
+          // shifting values & keeping order (Overwriting oldest)
+          for ( int j = 1; j > -1; j -= 1  ) { // 2 latest values (j already used)
+            AccelsMagSquare [i][j+1] = AccelsMagSquare [i][j];
+          } // end for 2 latest values
+
+          AccelsMagSquare [i][0] = newAccelMagSq; // new Accel Mag
+
+          // PRINT OF THE NEW FSYNCED VALUES
+          Serial.print("Acceleration Magnitude = ");
+          Serial.print(newAccelMagSq);
           Serial.print("x = ");
-          Serial.print(xAccel[counterValStored[i]][i]);
+          Serial.print(xAccel);
           Serial.print("  y = ");
-          Serial.print(yAccel[counterValStored[i]][i]);
+          Serial.print(yAccel);
           Serial.print("  z = ");
-          Serial.print(zAccel[counterValStored[i]][i]);
+          Serial.print(zAccel);
           Serial.print("  x Gyro = ");
-          Serial.print(xGyro[counterValStored[i]][i]);
+          Serial.print(((float)data.value.x_gyro)/32768.0*2000);
           Serial.print("  y Gyro = ");
-          Serial.print(yGyro[counterValStored[i]][i]);
+          Serial.print(((float)data.value.y_gyro)/32768.0*2000);
           Serial.print("  z Gyro = ");
-          Serial.print(zGyro[counterValStored[i]][i]);
+          Serial.print(((float)data.value.z_gyro)/32768.0*2000);
         } // end if FSYNCed
-      } // end for j
-    } // end for i
+      } // end for nbVal
+    } // end for i (8 IMUS)
 
     // 2: Synchronizing readings with FSYNC
-    // WTF: Doc MPU-9250 p. 13, comment on utilise FSYNC? EXT_SYNC_SET[2:0] (Adresse hexa = 1A)?
+    sendFSYNC(fsyncPin);
 
     // 3: Mesuring deformation with HX711
     // TO DO Voir avec Ced pour avoir la deformation
+    hx711Value = hx711Dev.blockingRead(); // Any safety criterion on that value?
 
     // 4: Mesuring Aileron position with KMZ60
     angleAileronRad = kmz.readAngleRad();
 
     // 5: Security check
-    // TO DO Implement security criterions
+    // IMPLEMENTED, check occurs everytime a new value is read
 
     // 6: Triggering security devices (If security check failed)
     // WTF: HOW?
 
     // 7: Connecting with servomotor
+    // WTF: HOW?
 
     // 8: Adjusting Angle of Attack of servomotor, potentiometer?
+    // WTF: HOW?
 
     // Delay could be adjusted/removed, for speed considerations
     delay(1000);
