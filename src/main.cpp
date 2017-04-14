@@ -12,8 +12,8 @@
 
 // MARK: Supporting functions
 void sendFSYNC(uint8_t fsyncPin) {
-  digitalWrite(uint8_t fsyncPin, HIGH);
-  digitalWrite(uint8_t fsyncPin, LOW);
+  digitalWrite(fsyncPin, HIGH);
+  digitalWrite(fsyncPin, LOW);
 }
 
 //MPU9250_I2C_BLOCKING dev = MPU9250_I2C_BLOCKING(0);
