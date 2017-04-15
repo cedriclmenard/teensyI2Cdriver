@@ -9,15 +9,15 @@ enum PIT_STATE {
 } pit_state;
 
 struct {
-  uint32_t* DATAOUTPort;
-  uint32_t* SCKPort;
+  volatile uint32_t* DATAOUTPort;
+  volatile uint32_t* SCKPort;
   uint32_t DATAOUTPin;
   uint32_t SCKPin;
 } pit3_pins;
 
 volatile uint8_t newDataReady = 0;
 
-HX711::HX711(uint32_t* DATAOUTPort, uint32_t DATAOUTPin, uint32_t* SCKPort,
+HX711::HX711(volatile uint32_t *DATAOUTPort, uint32_t DATAOUTPin, volatile uint32_t *SCKPort,
   uint32_t SCKPin, HX711Gain gain) : _DATAOUTPort(DATAOUTPort), _SCKPort(SCKPort),
   _DATAOUTPin(DATAOUTPin), _SCKPin(SCKPin), _gain(gain) {
 
