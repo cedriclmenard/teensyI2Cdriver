@@ -16,6 +16,11 @@ void sendFSYNC(uint8_t fsyncPin) {
   digitalWrite(fsyncPin, LOW);
 }
 
+void fireSecurity(uint8_t securityPin){
+  digitalWrite(securityPin, HIGH);
+  digitalWrite(securityPin, LOW);
+}
+
 //MPU9250_I2C_BLOCKING dev = MPU9250_I2C_BLOCKING(0);
 //BlockingI2Cdev dev = BlockingI2Cdev(MPU9250_I2C_ADDRESS);
 
@@ -32,7 +37,8 @@ accel_temp_gyro_t data;
 
 uint32_t VOUT1_PIN_TEENSY = 14;
 uint32_t VOUT2_PIN_TEENSY = 15;
-uint8_t fsyncPin = 5; // Read from global schematic
+uint8_t fsyncPin = 5; // Pin for fSYNC
+uint8_t securityPin = 26; // Pin to fire security devices
 
 KMZ60 kmz = KMZ60(VOUT1_PIN_TEENSY, VOUT2_PIN_TEENSY);
 double angleAileronRad;
@@ -46,7 +52,7 @@ float xGyro; // Same as accels
 float yGyro;
 float zGyro;
 float newAccelMagSq; //new magnitude of acceleration square
-int32_t hx711Value;
+int32_t hx711Value; //
 
 // WTF: SECUTIRY !!!! SEE VALUES BELOW. WHERE SHOULD WE CHECK?
 // Square of Absolute accel that should not be exceeded by any imu (note Square
@@ -55,7 +61,9 @@ float accelMaxSquare = 1.0;
 // 4 consecutive increasing maximum should not trigger if last accel is below a
 // certain threshold
 float accelMinSecutiry = 0.1;
-float strainMax; // should that be usefull
+float hx711ValMax = 100000; // WTF: NEEDS CALIBRATION
+
+uint32_t loopDelay = 1000; // milisecs
 
 //KMZ60 kmz = KMZ60(14,15);
 
@@ -97,7 +105,8 @@ void loop()
   // 1: Gathering values for 8 IMUs
   // for each IMU, get number of values to read
   for ( int i = 0; i < 8; i = i + 1  ) {
-    nbOfValues[i] = imus[i].getNumberOfAvailableValueToRead();
+    // divided by 14, because 14 bites per complete reads (2 for each accel, each gyro and temperature)
+    nbOfValues[i] = (uint32_t) (imus[i].getNumberOfAvailableValueToRead())/14.0;
   }
   // for each IMU
   for ( uint i = 0; i < 8; i += 1  ) {
@@ -105,8 +114,6 @@ void loop()
       Serial.print(i);
       Serial.println();
       // For the number of values to read for each IMU
-      // WTF: nbOfValues[i]/14 to break the for?? getNumberOfAvailableValueToRead()
-      // returns 1, 7 or 14 if one set of value in buffer??
       for (uint nbVal = 0; nbVal < nbOfValues[i]; nbVal += 1){
         data = imus[i].readDataFIFOBatch(); // if not SYNCED, no interest
         if (data.value.x_accel & 0x1){ //if value stored while FSYNC on
@@ -115,10 +122,11 @@ void loop()
           yAccel = ((float)data.value.y_accel)/32768.0*16; // new y
           zAccel = ((float)data.value.z_accel)/32768.0*16; // new z
           newAccelMagSq = xAccel*xAccel+yAccel*yAccel+zAccel*zAccel;
+          hx711Value = hx711Dev.blockingRead(); // NEEDS CALIBRATION
 
-          // Security: if newAccel>accelMax, or (4 consecutive increasing maximums, with the newest > accelMinSecutiry)
-          if ((newAccelMagSq>accelMaxSquare)|| ((AccelsMagSquare [i][2]<AccelsMagSquare [i][1])&(AccelsMagSquare [i][1]<AccelsMagSquare [i][0])&(AccelsMagSquare [i][0]<newAccelMagSq)&(newAccelMagSq>accelMinSecutiry))){
-            // fireSecurity!
+          // Security: if newAccel>accelMax, or Stain > CalibratedMaxStrain or (4 consecutive increasing maximums, with the newest > accelMinSecutiry)
+          if ((newAccelMagSq>accelMaxSquare)|| (hx711Value > hx711ValMax) || ((AccelsMagSquare [i][2]<AccelsMagSquare [i][1])&(AccelsMagSquare [i][1]<AccelsMagSquare [i][0])&(AccelsMagSquare [i][0]<newAccelMagSq)&(newAccelMagSq>accelMinSecutiry))){
+            fireSecurity(securityPin);
           }
 
           // shifting values & keeping order (Overwriting oldest)
@@ -152,25 +160,24 @@ void loop()
 
     // 3: Mesuring deformation with HX711
     // TO DO Voir avec Ced pour avoir la deformation
-    hx711Value = hx711Dev.blockingRead(); // Any safety criterion on that value?
 
     // 4: Mesuring Aileron position with KMZ60
     angleAileronRad = kmz.readAngleRad();
+    Serial.print("  Aileron angle (rad) = ");
+    Serial.print(angleAileronRad);
 
     // 5: Security check
     // IMPLEMENTED, check occurs everytime a new value is read
 
     // 6: Triggering security devices (If security check failed)
-    // WTF: HOW?
+    // DONE to test
 
-    // 7: Connecting with servomotor
-    // WTF: HOW?
+    // 7: Connecting with servomotor?
 
     // 8: Adjusting Angle of Attack of servomotor, potentiometer?
-    // WTF: HOW?
 
     // Delay could be adjusted/removed, for speed considerations
-    delay(1000);
+    delay(loopDelay);
   }
 
 
