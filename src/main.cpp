@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include "KMZ60.hpp"
 #include <stdint.h>
+#include "HX711.hpp"
 
 // MARK: Supporting functions
 void sendFSYNC(uint8_t fsyncPin) {
