@@ -8,14 +8,14 @@ _VOUT1_PIN_TEENSY(VOUT1_PIN_TEENSY), _VOUT2_PIN_TEENSY(VOUT2_PIN_TEENSY)
 
 }
 
-double KMZ60::readAngleRad() {
-  double cos_c = ((double)analogRead(_VOUT1_PIN_TEENSY))/1023 - 0.5;
-  double sin_c = ((double)analogRead(_VOUT2_PIN_TEENSY))/1023 - 0.5;
+float KMZ60::readAngleRad() {
+  float cos_c = ((float)analogRead(_VOUT1_PIN_TEENSY))/1023 - 0.5;
+  float sin_c = ((float)analogRead(_VOUT2_PIN_TEENSY))/1023 - 0.5;
   return atan(sin_c/cos_c);
 }
 
-double KMZ60::readAngleDeg() {
-  double cos_c = ((double)analogRead(_VOUT1_PIN_TEENSY))/1023 - 0.5;
-  double sin_c = ((double)analogRead(_VOUT2_PIN_TEENSY))/1023 - 0.5;
+float KMZ60::readAngleDeg() {
+  float cos_c = ((float)analogRead(_VOUT1_PIN_TEENSY))/1023 - 0.5;
+  float sin_c = ((float)analogRead(_VOUT2_PIN_TEENSY))/1023 - 0.5;
   return atan(sin_c/cos_c)*RAD2DEG;
 }

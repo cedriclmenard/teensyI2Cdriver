@@ -9,8 +9,8 @@ class KMZ60 {
   uint32_t _VOUT2_PIN_TEENSY;
 public:
   KMZ60(uint32_t VOUT1_PIN_TEENSY, uint32_t VOUT2_PIN_TEENSY);
-  double readAngleRad();
-  double readAngleDeg();
+  float readAngleRad();
+  float readAngleDeg();
 
 };
 
