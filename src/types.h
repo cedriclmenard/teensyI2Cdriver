@@ -12,8 +12,9 @@ union halfword_t
 {
   uint8_t b[2];
 
-  uint8_t h;
   uint8_t l;
+  uint8_t h;
+
 
   uint16_t hw;
 };
@@ -22,15 +23,17 @@ union word_t
 {
   uint8_t b[4];
 
-  uint8_t hh;
-  uint8_t h;
-  uint8_t l;
   uint8_t ll;
+  uint8_t l;
+  uint8_t h;
+  uint8_t hh;
+
+
 
   uint16_t hw[2];
 
-  uint16_t hw_h;
   uint16_t hw_l;
+  uint16_t hw_h;
 
   uint32_t w;
 };

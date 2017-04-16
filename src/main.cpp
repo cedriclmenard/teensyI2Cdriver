@@ -42,7 +42,7 @@ uint8_t fsyncPin = 5; // Pin for fSYNC
 uint8_t securityPin = 26; // Pin to fire security devices
 
 KMZ60 kmz = KMZ60(VOUT1_PIN_TEENSY, VOUT2_PIN_TEENSY);
-double angleAileronRad;
+float angleAileronDeg;
 
 // Need to keep 3 values for each of the 8 IMUS for security check.
 float AccelsMagSquare [8][3]; // Security only needs magnitude square
@@ -53,7 +53,7 @@ float xGyro; // Same as accels
 float yGyro;
 float zGyro;
 float newAccelMagSq; //new magnitude of acceleration square
-int32_t hx711Value; //
+//int32_t hx711Value; //
 
 // WTF: SECUTIRY !!!! SEE VALUES BELOW. WHERE SHOULD WE CHECK?
 // Square of Absolute accel that should not be exceeded by any imu (note Square
@@ -62,18 +62,21 @@ float accelMaxSquare = 1.0;
 // 4 consecutive increasing maximum should not trigger if last accel is below a
 // certain threshold
 float accelMinSecutiry = 0.1;
-int32_t hx711ValMax = 100000; // WTF: NEEDS CALIBRATION
+//int32_t hx711ValMax = 100000; // WTF: NEEDS CALIBRATION
 
 uint32_t loopDelay = 1000; // milisecs
 
 //KMZ60 kmz = KMZ60(14,15);
 
 // MARK: Initialize HX711
-HX711 hx711Dev = HX711(&GPIOE_PDOR, 26, &GPIOA_PDIR,
-  5, X128);
+//HX711 hx711Dev = HX711(&GPIOE_PDOR, 26, &GPIOA_PDIR,
+//  5, X128);
 
 void setup()
 {
+  Serial.begin(38400);
+  Serial.print("Initialised");
+  Serial.println();
   // MARK: HX711 pin init
   GPIOE_PDDR &= ~(1<<26);
   GPIOA_PDDR |= (1<<5);
@@ -88,16 +91,16 @@ void setup()
     // Needs to initialize all values in AccelsMagSquare, to ensure the shifting
     // of values when reading doesn't access residual memory
     for ( uint j = 0; j < 3; j = j + 1  ) { // 3 latest values
-      AccelsMagSquare [i][j] = 0.0;
+      AccelsMagSquare[i][j] = 0.0;
     }// end for 3 latest values
   }// end for 8 IMUS
 
-  Serial.begin(38400);
 
   delay(3000);
   //dev.initialize();
   //Serial.println("Hello from the otter slide");
-
+  Serial.print("Main Begin");
+  Serial.println();
 }
 
 
@@ -110,9 +113,14 @@ void loop()
   for ( int i = 0; i < 8; i = i + 1  ) {
     // divided by 14, because 14 bites per complete reads (2 for each accel, each gyro and temperature)
     nbOfValues[i] = (uint32_t) (imus[i].getNumberOfAvailableValueToRead())/14.0;
+    Serial.println();
+    Serial.print("NOT DIVIDED NUMBER OF VALUES = ");
+    Serial.print(imus[i].getNumberOfAvailableValueToRead());
   }
   // for each IMU
   for ( uint i = 0; i < 8; i += 1  ) {
+      Serial.println();
+      Serial.println();
       Serial.print("Reading Imu: ");
       Serial.print(i);
       Serial.println();
@@ -125,10 +133,11 @@ void loop()
           yAccel = ((float)data.value.y_accel)/32768.0*16; // new y
           zAccel = ((float)data.value.z_accel)/32768.0*16; // new z
           newAccelMagSq = xAccel*xAccel+yAccel*yAccel+zAccel*zAccel;
-          hx711Value = abs(hx711Dev.blockingRead()); // NEEDS CALIBRATION
+          //hx711Value = abs(hx711Dev.blockingRead()); // NEEDS CALIBRATION
 
           // Security: if newAccel>accelMax, or Stain > CalibratedMaxStrain or (4 consecutive increasing maximums, with the newest > accelMinSecutiry)
-          if ((newAccelMagSq>accelMaxSquare)|| (hx711Value > hx711ValMax) || ((AccelsMagSquare [i][2]<AccelsMagSquare [i][1])&(AccelsMagSquare [i][1]<AccelsMagSquare [i][0])&(AccelsMagSquare [i][0]<newAccelMagSq)&(newAccelMagSq>accelMinSecutiry))){
+          //|| (hx711Value > hx711ValMax)
+          if ((newAccelMagSq>accelMaxSquare) || ((AccelsMagSquare [i][2]<AccelsMagSquare [i][1])&(AccelsMagSquare [i][1]<AccelsMagSquare [i][0])&(AccelsMagSquare [i][0]<newAccelMagSq)&(newAccelMagSq>accelMinSecutiry))){
             fireSecurity(securityPin);
           }
 
@@ -140,6 +149,7 @@ void loop()
           AccelsMagSquare [i][0] = newAccelMagSq; // new Accel Mag
 
           // PRINT OF THE NEW FSYNCED VALUES
+          Serial.println();
           Serial.print("Acceleration Magnitude = ");
           Serial.print(newAccelMagSq);
           Serial.print("x = ");
@@ -156,6 +166,9 @@ void loop()
           Serial.print(((float)data.value.z_gyro)/32768.0*2000);
         } // end if FSYNCed
       } // end for nbVal
+      Serial.println();
+      Serial.print("NUMBER OF VALUES ");
+      Serial.print(nbOfValues[i]);
     } // end for i (8 IMUS)
 
     // 2: Synchronizing readings with FSYNC
@@ -165,9 +178,12 @@ void loop()
     // TO DO Voir avec Ced pour avoir la deformation
 
     // 4: Mesuring Aileron position with KMZ60
-    angleAileronRad = kmz.readAngleRad();
-    Serial.print("  Aileron angle (rad) = ");
-    Serial.print(angleAileronRad);
+    angleAileronDeg = kmz.readAngleDeg();
+    Serial.println();
+    Serial.print("Aileron angle (deg) = ");
+    Serial.print(angleAileronDeg);
+
+
 
     // 5: Security check
     // IMPLEMENTED, check occurs everytime a new value is read
