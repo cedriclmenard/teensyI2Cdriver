@@ -91,12 +91,12 @@ void setup()
     imus[i].initialize();
     // Needs to initialize all values in AccelsMagSquare, to ensure the shifting
     // of values when reading doesn't access residual memory
-    for ( uint j = 0; j < 3; j = j + 1  ) { // 3 latest values
+    for ( uint j = 0; j < 2; j = j + 1  ) { // 2 latest values
       AccelsMagSquare[i][j] = 0.0;
       AccelsMagPre [i][j] = 0.0;
     }// end for 3 latest values
+    AccelsMagSquare[i][2] = 0.0; // AccelMagSquare needs one more value than AccelsMagPre
   }// end for 8 IMUS
-
 
   //delay(3000);
   //dev.initialize();
@@ -156,10 +156,8 @@ void loop()
             } // end for 2 latest values
             AccelsMagSquare [i][0] = newAccelMagSq; // new Accel Mag
           }
-
           AccelsMagPre [i][1] = AccelsMagPre [i][0];
           AccelsMagPre [i][0] = newAccelMagSq;
-
 
 
           // PRINT OF THE NEW FSYNCED VALUES
