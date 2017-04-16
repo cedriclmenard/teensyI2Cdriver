@@ -62,7 +62,7 @@ float accelMaxSquare = 1.0;
 // 4 consecutive increasing maximum should not trigger if last accel is below a
 // certain threshold
 float accelMinSecutiry = 0.1;
-float hx711ValMax = 100000; // WTF: NEEDS CALIBRATION
+int32_t hx711ValMax = 100000; // WTF: NEEDS CALIBRATION
 
 uint32_t loopDelay = 1000; // milisecs
 
@@ -77,7 +77,7 @@ void setup()
   // MARK: HX711 pin init
   GPIOE_PDDR &= ~(1<<26);
   GPIOA_PDDR |= (1<<5);
-  
+
   // initialize LED digital pin as an output.
   // pinMode(LED_BUILTIN, OUTPUT);
   // I2Cdev::initializeI2C0(100000);
@@ -125,7 +125,7 @@ void loop()
           yAccel = ((float)data.value.y_accel)/32768.0*16; // new y
           zAccel = ((float)data.value.z_accel)/32768.0*16; // new z
           newAccelMagSq = xAccel*xAccel+yAccel*yAccel+zAccel*zAccel;
-          hx711Value = hx711Dev.blockingRead(); // NEEDS CALIBRATION
+          hx711Value = abs(hx711Dev.blockingRead()); // NEEDS CALIBRATION
 
           // Security: if newAccel>accelMax, or Stain > CalibratedMaxStrain or (4 consecutive increasing maximums, with the newest > accelMinSecutiry)
           if ((newAccelMagSq>accelMaxSquare)|| (hx711Value > hx711ValMax) || ((AccelsMagSquare [i][2]<AccelsMagSquare [i][1])&(AccelsMagSquare [i][1]<AccelsMagSquare [i][0])&(AccelsMagSquare [i][0]<newAccelMagSq)&(newAccelMagSq>accelMinSecutiry))){
