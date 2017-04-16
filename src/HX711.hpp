@@ -36,7 +36,7 @@ public:
   */
   HX711(volatile uint32_t *DATAOUTPort, uint32_t DATAOUTPin, volatile uint32_t *SCKPort,
     uint32_t SCKPin, HX711Gain gain);
-  ~HX711();
+  //~HX711();
 
   /*!
      \brief Reads in a blocking manner the given HX711 device

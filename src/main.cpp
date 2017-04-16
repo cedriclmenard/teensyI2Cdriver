@@ -69,13 +69,15 @@ uint32_t loopDelay = 1000; // milisecs
 //KMZ60 kmz = KMZ60(14,15);
 
 // MARK: Initialize HX711
-GPIOE_PDDR &= ~(1<<26);
-GPIOA_PDDR |= (1<<5);
-HX711 hx711Dev = HX711(GPIOE_PDOR, 26, GPIOA_PDIR,
+HX711 hx711Dev = HX711(&GPIOE_PDOR, 26, &GPIOA_PDIR,
   5, X128);
 
 void setup()
 {
+  // MARK: HX711 pin init
+  GPIOE_PDDR &= ~(1<<26);
+  GPIOA_PDDR |= (1<<5);
+  
   // initialize LED digital pin as an output.
   // pinMode(LED_BUILTIN, OUTPUT);
   // I2Cdev::initializeI2C0(100000);
