@@ -60,10 +60,14 @@ void MPU9250_Wire_BLOCKING::setMuxToCurrentAddress() {
 
 uint32_t MPU9250_Wire_BLOCKING::getNumberOfAvailableValueToRead(){
   setMuxToCurrentAddress();
-  halfword_t readBuf;
-  readBuf.h = readRegister(MPU9250_I2C_ADDRESS, MPU9250_FIFO_COUNTH);
-  readBuf.l = readRegister(MPU9250_I2C_ADDRESS, MPU9250_FIFO_COUNTL);
-  return (uint32_t) readBuf.hw;
+  // halfword_t readBuf;
+  // readBuf.l = readRegister(MPU9250_I2C_ADDRESS, MPU9250_FIFO_COUNTL);
+  // readBuf.h = readRegister(MPU9250_I2C_ADDRESS, MPU9250_FIFO_COUNTH);
+  uint8_t lb = readRegister(MPU9250_I2C_ADDRESS, MPU9250_FIFO_COUNTL);
+  uint8_t hb = readRegister(MPU9250_I2C_ADDRESS, MPU9250_FIFO_COUNTH);
+  Serial.println((hb << 8) | lb);
+  return (hb << 8) | lb;
+  //return (uint32_t) ((readBuf.h << 8) | readBuf.l );
 }
 
 void MPU9250_Wire_BLOCKING::readDataFIFO(uint8_t dataBuffer[], uint32_t numberOfValues) {
@@ -109,6 +113,11 @@ void MPU9250_Wire_BLOCKING::initialize() {
 
   writeRegister(MPU9250_I2C_ADDRESS, MPU9250_PWR_MGMT_1, regVal);
 
+  // Enable low pass filter
+  regVal = readRegister(MPU9250_I2C_ADDRESS,MPU9250_CONFIG);
+  regVal |= 3;
+  writeRegister(MPU9250_I2C_ADDRESS,MPU9250_CONFIG, regVal);
+
   // Set gyro range -------
   regVal = readRegister(MPU9250_I2C_ADDRESS, MPU9250_GYRO_CONFIG);
 
@@ -122,6 +131,11 @@ void MPU9250_Wire_BLOCKING::initialize() {
   regVal |= 0x18; // Mask for bits 3:4, set to full scale (16g)
 
   writeRegister(MPU9250_I2C_ADDRESS, MPU9250_ACCEL_CONFIG, regVal);
+
+
+
+  // Outputs 500Hz
+  writeRegister(MPU9250_I2C_ADDRESS,MPU9250_SMPLRT_DIV, 15);
 
   // Set FSYNC
   regVal = readRegister(MPU9250_I2C_ADDRESS, MPU9250_SMPLRT_DIV);

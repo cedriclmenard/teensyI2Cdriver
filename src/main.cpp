@@ -46,6 +46,7 @@ float angleAileronDeg;
 
 // Need to keep 3 values for each of the 8 IMUS for security check.
 float AccelsMagSquare [8][3]; // Security only needs magnitude square
+float AccelsMagPre [8][2]; // To ensure maximum, we need to store 2 previous values
 float xAccel; // Each IMU read is stored to calculate Magnitude and print
 float yAccel;
 float zAccel;
@@ -92,11 +93,12 @@ void setup()
     // of values when reading doesn't access residual memory
     for ( uint j = 0; j < 3; j = j + 1  ) { // 3 latest values
       AccelsMagSquare[i][j] = 0.0;
+      AccelsMagPre [i][j] = 0.0;
     }// end for 3 latest values
   }// end for 8 IMUS
 
 
-  delay(3000);
+  //delay(3000);
   //dev.initialize();
   //Serial.println("Hello from the otter slide");
   Serial.print("Main Begin");
@@ -110,13 +112,14 @@ void loop()
 
   // 1: Gathering values for 8 IMUs
   // for each IMU, get number of values to read
-  for ( int i = 0; i < 8; i = i + 1  ) {
-    // divided by 14, because 14 bites per complete reads (2 for each accel, each gyro and temperature)
-    nbOfValues[i] = (uint32_t) (imus[i].getNumberOfAvailableValueToRead())/14.0;
-    Serial.println();
-    Serial.print("NOT DIVIDED NUMBER OF VALUES = ");
-    Serial.print(imus[i].getNumberOfAvailableValueToRead());
-  }
+  // REMOVING READFIFO
+  // for ( int i = 0; i < 8; i = i + 1  ) {
+  //   // divided by 14, because 14 bites per complete reads (2 for each accel, each gyro and temperature)
+  //   nbOfValues[i] = (uint32_t) (imus[i].getNumberOfAvailableValueToRead())/14.0;
+  //   Serial.println();
+  //   Serial.print("NOT DIVIDED NUMBER OF VALUES = ");
+  //   Serial.print(imus[i].getNumberOfAvailableValueToRead());
+  // }
   // for each IMU
   for ( uint i = 0; i < 8; i += 1  ) {
       Serial.println();
@@ -124,10 +127,14 @@ void loop()
       Serial.print("Reading Imu: ");
       Serial.print(i);
       Serial.println();
-      // For the number of values to read for each IMU
-      for (uint nbVal = 0; nbVal < nbOfValues[i]; nbVal += 1){
-        data = imus[i].readDataFIFOBatch(); // if not SYNCED, no interest
-        if (data.value.x_accel & 0x1){ //if value stored while FSYNC on
+
+      // REMOVING READFIFO
+      // // For the number of values to read for each IMU
+      // for (uint nbVal = 0; nbVal < nbOfValues[i]; nbVal += 1){
+      //   data = imus[i].readDataFIFOBatch(); // if not SYNCED, no interest
+      //   if (data.value.x_accel & 0x1){ //if value stored while FSYNC on
+
+          data = imus[i].readDataRegisters();
 
           xAccel = ((float)data.value.x_accel)/32768.0*16; // new x
           yAccel = ((float)data.value.y_accel)/32768.0*16; // new y
@@ -141,18 +148,25 @@ void loop()
             fireSecurity(securityPin);
           }
 
-          // shifting values & keeping order (Overwriting oldest)
-          for ( int j = 1; j > -1; j -= 1  ) { // 2 latest values (j already used)
-            AccelsMagSquare [i][j+1] = AccelsMagSquare [i][j];
-          } // end for 2 latest values
+          // if it's a maximum
+          // shifting values in AccelMagSquare & keeping order (Overwriting oldest)
+          if ((AccelsMagPre [i][1]<AccelsMagPre [i][0])&&(newAccelMagSq<AccelsMagPre [i][0])){
+            for ( int j = 1; j > -1; j -= 1  ) { // 2 latest values (j already used)
+              AccelsMagSquare [i][j+1] = AccelsMagSquare [i][j];
+            } // end for 2 latest values
+            AccelsMagSquare [i][0] = newAccelMagSq; // new Accel Mag
+          }
 
-          AccelsMagSquare [i][0] = newAccelMagSq; // new Accel Mag
+          AccelsMagPre [i][1] = AccelsMagPre [i][0];
+          AccelsMagPre [i][0] = newAccelMagSq;
+
+
 
           // PRINT OF THE NEW FSYNCED VALUES
           Serial.println();
           Serial.print("Acceleration Magnitude = ");
           Serial.print(newAccelMagSq);
-          Serial.print("x = ");
+          Serial.print("  x = ");
           Serial.print(xAccel);
           Serial.print("  y = ");
           Serial.print(yAccel);
@@ -165,14 +179,15 @@ void loop()
           Serial.print("  z Gyro = ");
           Serial.print(((float)data.value.z_gyro)/32768.0*2000);
         } // end if FSYNCed
-      } // end for nbVal
-      Serial.println();
-      Serial.print("NUMBER OF VALUES ");
-      Serial.print(nbOfValues[i]);
-    } // end for i (8 IMUS)
 
-    // 2: Synchronizing readings with FSYNC
-    sendFSYNC(fsyncPin);
+      // REMOVING READFIFO
+    //   } // end for nbVal
+    //   // Serial.println();
+    //   // Serial.print("NUMBER OF VALUES ");
+    //   // Serial.print(nbOfValues[i]);
+    // } // end for i (8 IMUS)
+    // // 2: Synchronizing readings with FSYNC
+    // sendFSYNC(fsyncPin);
 
     // 3: Mesuring deformation with HX711
     // TO DO Voir avec Ced pour avoir la deformation
@@ -196,7 +211,7 @@ void loop()
     // 8: Adjusting Angle of Attack of servomotor, potentiometer?
 
     // Delay could be adjusted/removed, for speed considerations
-    delay(loopDelay);
+    //delay(loopDelay);
   }
 
 
