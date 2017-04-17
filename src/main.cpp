@@ -90,6 +90,9 @@ void setup()
   GPIOE_PDDR &= ~(1<<26);
   GPIOA_PDDR |= (1<<5);
 
+  // MARK: Init security pin
+  pinMode(securityPin, OUTPUT);
+
   // initialize LED digital pin as an output.
   // pinMode(LED_BUILTIN, OUTPUT);
   // I2Cdev::initializeI2C0(100000);
