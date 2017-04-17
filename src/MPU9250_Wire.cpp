@@ -8,7 +8,7 @@ static uint32_t Wire_begin_counter = 0;
 uint8_t readRegister(uint8_t address,uint8_t reg) {
   Wire.beginTransmission(address);
   Wire.write(reg);
-  Wire.endTransmission(false);
+  uint8_t rVal = Wire.endTransmission(false);
   Wire.requestFrom(address, 1);
   return Wire.read();
 }
@@ -17,7 +17,7 @@ void writeRegister(uint8_t address, uint8_t reg, uint8_t data) {
   Wire.beginTransmission(address);
   Wire.write(reg);
   Wire.write(data);
-  Wire.endTransmission();
+  uint8_t rVal = Wire.endTransmission();
 }
 
 void readRegisterBurst(uint8_t address, uint8_t reg, uint8_t* data, uint8_t length) {
@@ -34,7 +34,7 @@ void writeRegisterBurst(uint8_t address, uint8_t reg, uint8_t* data, uint8_t len
   Wire.beginTransmission(address);
   Wire.write(reg);
   Wire.write(data, length);
-  Wire.endTransmission();
+  uint8_t rVal = Wire.endTransmission();
 }
 
 MPU9250_Wire_BLOCKING::MPU9250_Wire_BLOCKING(uint8_t muxAddress)
@@ -55,7 +55,7 @@ MPU9250_Wire_BLOCKING::~MPU9250_Wire_BLOCKING() {
 void MPU9250_Wire_BLOCKING::setMuxToCurrentAddress() {
   Wire.beginTransmission(MUXADD);
   Wire.write(_muxAddress);
-  Wire.endTransmission();
+  uint8_t rVal = Wire.endTransmission();
 }
 
 uint32_t MPU9250_Wire_BLOCKING::getNumberOfAvailableValueToRead(){
@@ -65,7 +65,6 @@ uint32_t MPU9250_Wire_BLOCKING::getNumberOfAvailableValueToRead(){
   // readBuf.h = readRegister(MPU9250_I2C_ADDRESS, MPU9250_FIFO_COUNTH);
   uint8_t lb = readRegister(MPU9250_I2C_ADDRESS, MPU9250_FIFO_COUNTL);
   uint8_t hb = readRegister(MPU9250_I2C_ADDRESS, MPU9250_FIFO_COUNTH);
-  Serial.println((hb << 8) | lb);
   return (hb << 8) | lb;
   //return (uint32_t) ((readBuf.h << 8) | readBuf.l );
 }
@@ -150,4 +149,27 @@ void MPU9250_Wire_BLOCKING::initialize() {
   regVal = readRegister(MPU9250_I2C_ADDRESS, MPU9250_FIFO_EN);
   regVal |= 0xFF << 3; // Set FIFO to save accel, gyro and temp
   writeRegister(MPU9250_I2C_ADDRESS, MPU9250_FIFO_EN, regVal);
+}
+
+
+void writeToMainServo() {
+  Wire.beginTransmission(MUXADD);
+  Wire.write(1<<4);
+  uint8_t rVal = Wire.endTransmission();
+
+
+  uint8_t arr[] = {0,0,0,0};
+  // Wire.beginTransmission(0x08);
+  // Wire.write(3);
+  // Wire.write(arr,4);
+  // rVal = Wire.endTransmission();
+  // Serial.print("Transmission ended with code ");
+  // Serial.println(rVal);
+
+  arr[0] = 10;
+  Wire.beginTransmission(0x08);
+  Wire.write(8);
+  Wire.write(arr,4);
+  rVal = Wire.endTransmission();
+
 }

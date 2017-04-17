@@ -10,16 +10,20 @@
 #include "KMZ60.hpp"
 #include <stdint.h>
 #include "HX711.hpp"
+//#define DEBUG
 
 // MARK: Supporting functions
-void sendFSYNC(uint8_t fsyncPin) {
-  digitalWrite(fsyncPin, HIGH);
-  digitalWrite(fsyncPin, LOW);
+void sendFSYNC(uint8_t thisFsyncPin) {
+  digitalWrite(thisFsyncPin, HIGH);
+  digitalWrite(thisFsyncPin, LOW);
 }
 
-void fireSecurity(uint8_t securityPin){
-  digitalWrite(securityPin, HIGH);
-  digitalWrite(securityPin, LOW);
+void fireSecurity(uint8_t thisSecurityPin){
+  digitalWrite(thisSecurityPin, LOW);
+  Serial.print("SECURITY FIRED");
+  delay(10000);
+  digitalWrite(thisSecurityPin, HIGH);
+  Serial.println();
 }
 
 //MPU9250_I2C_BLOCKING dev = MPU9250_I2C_BLOCKING(0);
@@ -28,13 +32,17 @@ void fireSecurity(uint8_t securityPin){
 //MPU9250_Wire_BLOCKING dev = MPU9250_Wire_BLOCKING(0);
 
 // Declaration des 8 imus
+// TEST!
 MPU9250_Wire_BLOCKING imus[8] = {MPU9250_Wire_BLOCKING(0),
   MPU9250_Wire_BLOCKING(1), MPU9250_Wire_BLOCKING(2), MPU9250_Wire_BLOCKING(3),
 MPU9250_Wire_BLOCKING(4), MPU9250_Wire_BLOCKING(5), MPU9250_Wire_BLOCKING(6),
 MPU9250_Wire_BLOCKING(7)};
 
+//MPU9250_Wire_BLOCKING imus[1] = {MPU9250_Wire_BLOCKING(5)};
+
 uint32_t nbOfValues[8]; // One number per IMU
 accel_temp_gyro_t data;
+uint32_t timeRead;
 
 uint32_t VOUT1_PIN_TEENSY = 14;
 uint32_t VOUT2_PIN_TEENSY = 15;
@@ -59,10 +67,10 @@ float newAccelMagSq; //new magnitude of acceleration square
 // WTF: SECUTIRY !!!! SEE VALUES BELOW. WHERE SHOULD WE CHECK?
 // Square of Absolute accel that should not be exceeded by any imu (note Square
 // because root square would be long to compute for nothing, and avoid sign check)
-float accelMaxSquare = 1.0;
+float accelMaxSquare = 2.0;
 // 4 consecutive increasing maximum should not trigger if last accel is below a
 // certain threshold
-float accelMinSecutiry = 0.1;
+float accelMinSecutiry = 1.1;
 //int32_t hx711ValMax = 100000; // WTF: NEEDS CALIBRATION
 
 uint32_t loopDelay = 1000; // milisecs
@@ -86,9 +94,10 @@ void setup()
   // pinMode(LED_BUILTIN, OUTPUT);
   // I2Cdev::initializeI2C0(100000);
 
+  // TEST! Change i 1 or 8
   // Initialisation des 8 imus
   for ( uint i = 0; i < 8; i = i + 1  ) {
-    imus[i].initialize();
+    //imus[i].initialize();
     // Needs to initialize all values in AccelsMagSquare, to ensure the shifting
     // of values when reading doesn't access residual memory
     for ( uint j = 0; j < 2; j = j + 1  ) { // 2 latest values
@@ -97,17 +106,34 @@ void setup()
     }// end for 3 latest values
     AccelsMagSquare[i][2] = 0.0; // AccelMagSquare needs one more value than AccelsMagPre
   }// end for 8 IMUS
-
-  //delay(3000);
+  //pinMode(securityPin,OUTPUT);
+  Serial.print("HIGH");
+  digitalWrite(securityPin, HIGH);
   //dev.initialize();
   //Serial.println("Hello from the otter slide");
-  Serial.print("Main Begin");
+
+  delay(3000);
+
+  fireSecurity(securityPin);
+  Serial.print("HIGH");
+
   Serial.println();
 }
 
+#ifdef DEBUG
+void loop() {
+  writeToMainServo();
+  delay(5000);
+}
+#endif
 
+
+#ifndef DEBUG
 void loop()
 {
+
+
+
   // Programmation du main par Vincent
 
   // 1: Gathering values for 8 IMUs
@@ -120,13 +146,18 @@ void loop()
   //   Serial.print("NOT DIVIDED NUMBER OF VALUES = ");
   //   Serial.print(imus[i].getNumberOfAvailableValueToRead());
   // }
+
+  // TEST! Change i 1 or 8
   // for each IMU
+  // Serial.println();
+  // timeRead = micros();
+  // Serial.print(timeRead);
+  // Serial.print(",");
   for ( uint i = 0; i < 8; i += 1  ) {
-      Serial.println();
-      Serial.println();
-      Serial.print("Reading Imu: ");
-      Serial.print(i);
-      Serial.println();
+
+      // Serial.print(i);
+      // Serial.print(",");
+
 
       // REMOVING READFIFO
       // // For the number of values to read for each IMU
@@ -160,22 +191,36 @@ void loop()
           AccelsMagPre [i][0] = newAccelMagSq;
 
 
-          // PRINT OF THE NEW FSYNCED VALUES
-          Serial.println();
-          Serial.print("Acceleration Magnitude = ");
-          Serial.print(newAccelMagSq);
-          Serial.print("  x = ");
-          Serial.print(xAccel);
-          Serial.print("  y = ");
-          Serial.print(yAccel);
-          Serial.print("  z = ");
-          Serial.print(zAccel);
-          Serial.print("  x Gyro = ");
-          Serial.print(((float)data.value.x_gyro)/32768.0*2000);
-          Serial.print("  y Gyro = ");
-          Serial.print(((float)data.value.y_gyro)/32768.0*2000);
-          Serial.print("  z Gyro = ");
-          Serial.print(((float)data.value.z_gyro)/32768.0*2000);
+          // // PRINT HUMAN READABLE
+          // Serial.println();
+          // Serial.print("Acceleration Magnitude = ");
+          // Serial.print(newAccelMagSq);
+          // Serial.print("  x = ");
+          // Serial.print(xAccel);
+          // Serial.print("  y = ");
+          // Serial.print(yAccel);
+          // Serial.print("  z = ");
+          // Serial.print(zAccel);
+          // Serial.print("  x Gyro = ");
+          // Serial.print(((float)data.value.x_gyro)/32768.0*2000);
+          // Serial.print("  y Gyro = ");
+          // Serial.print(((float)data.value.y_gyro)/32768.0*2000);
+          // Serial.print("  z Gyro = ");
+          // Serial.print(((float)data.value.z_gyro)/32768.0*2000);
+
+          // // OUTPUT CSV
+          // Serial.print(xAccel);
+          // Serial.print(",");
+          // Serial.print(yAccel);
+          // Serial.print(",");
+          // Serial.print(zAccel);
+          // Serial.print(",");
+          // Serial.print(((float)data.value.x_gyro)/32768.0*2000);
+          // Serial.print(",");
+          // Serial.print(((float)data.value.y_gyro)/32768.0*2000);
+          // Serial.print(",");
+          // Serial.print(((float)data.value.z_gyro)/32768.0*2000);
+          // Serial.print(",");
         } // end if FSYNCed
 
       // REMOVING READFIFO
@@ -192,9 +237,8 @@ void loop()
 
     // 4: Mesuring Aileron position with KMZ60
     angleAileronDeg = kmz.readAngleDeg();
-    Serial.println();
-    Serial.print("Aileron angle (deg) = ");
-    Serial.print(angleAileronDeg);
+
+    // Serial.print(angleAileronDeg);
 
 
 
@@ -211,7 +255,7 @@ void loop()
     // Delay could be adjusted/removed, for speed considerations
     //delay(loopDelay);
   }
-
+#endif
 
 
   // KEPT OLD MAIN FOR REFERENCING IF NEEDED, WILL BE CLEARED ONCE COMPLETED
