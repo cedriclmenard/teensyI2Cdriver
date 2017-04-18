@@ -12,6 +12,8 @@
 #include "HX711.hpp"
 //#define DEBUG
 
+//#define PRINTHUMAN // Comment for machine format, uncomment for text
+
 // MARK: Supporting functions
 void sendFSYNC(uint8_t thisFsyncPin) {
   digitalWrite(thisFsyncPin, HIGH);
@@ -19,12 +21,74 @@ void sendFSYNC(uint8_t thisFsyncPin) {
 }
 
 void fireSecurity(uint8_t thisSecurityPin){
-  digitalWrite(thisSecurityPin, LOW);
-  Serial.print("SECURITY FIRED");
-  delay(10000);
   digitalWrite(thisSecurityPin, HIGH);
   Serial.println();
+  Serial.print("SECURITY FIRED");
+  digitalWrite(thisSecurityPin, LOW);
+  Serial.println();
 }
+
+void printNewLineMachine(uint32_t thisTimeRead) {
+  Serial.println();
+  Serial.print(thisTimeRead);
+  Serial.print(",");
+}
+
+void printNewLineHuman(uint32_t thisTimeRead) {
+  Serial.println();
+  Serial.print("Temps de lecture (ms) = ");
+  Serial.print(thisTimeRead);
+}
+
+void printAccelsMachine(uint i, float ax, float ay, float az, float gx, float gy, float gz){
+  Serial.print(i);
+  Serial.print(",");
+  Serial.print(ax);
+  Serial.print(",");
+  Serial.print(ay);
+  Serial.print(",");
+  Serial.print(az);
+  Serial.print(",");
+  Serial.print(gx);
+  Serial.print(",");
+  Serial.print(gy);
+  Serial.print(",");
+  Serial.print(gz);
+  Serial.print(",");
+}
+
+void printAccelsHuman(uint i, float mag, float ax, float ay, float az, float gx, float gy, float gz){
+  Serial.println();
+  Serial.print("IMU = ");
+  Serial.print(i);
+  Serial.println();
+  Serial.print("Acceleration Magnitude = ");
+  Serial.print(mag);
+  Serial.print("  x = ");
+  Serial.print(ax);
+  Serial.print("  y = ");
+  Serial.print(ay);
+  Serial.print("  z = ");
+  Serial.print(az);
+  Serial.print("  x Gyro = ");
+  Serial.print(gx);
+  Serial.print("  y Gyro = ");
+  Serial.print(gy);
+  Serial.print("  z Gyro = ");
+  Serial.print(gz);
+}
+
+void printAngleMachine(float ang) {
+Serial.print(ang);
+}
+
+void printAngleHuman(float ang) {
+Serial.println();
+Serial.print("Angle aileron (deg) = ");
+Serial.print(ang);
+}
+
+
 
 //MPU9250_I2C_BLOCKING dev = MPU9250_I2C_BLOCKING(0);
 //BlockingI2Cdev dev = BlockingI2Cdev(MPU9250_I2C_ADDRESS);
@@ -67,7 +131,7 @@ float newAccelMagSq; //new magnitude of acceleration square
 // WTF: SECUTIRY !!!! SEE VALUES BELOW. WHERE SHOULD WE CHECK?
 // Square of Absolute accel that should not be exceeded by any imu (note Square
 // because root square would be long to compute for nothing, and avoid sign check)
-float accelMaxSquare = 2.0;
+float accelMaxSquare = 1.5;
 // 4 consecutive increasing maximum should not trigger if last accel is below a
 // certain threshold
 float accelMinSecutiry = 1.1;
@@ -100,7 +164,7 @@ void setup()
   // TEST! Change i 1 or 8
   // Initialisation des 8 imus
   for ( uint i = 0; i < 8; i = i + 1  ) {
-    //imus[i].initialize();
+    imus[i].initialize();
     // Needs to initialize all values in AccelsMagSquare, to ensure the shifting
     // of values when reading doesn't access residual memory
     for ( uint j = 0; j < 2; j = j + 1  ) { // 2 latest values
@@ -110,17 +174,9 @@ void setup()
     AccelsMagSquare[i][2] = 0.0; // AccelMagSquare needs one more value than AccelsMagPre
   }// end for 8 IMUS
   //pinMode(securityPin,OUTPUT);
-  Serial.print("HIGH");
-  digitalWrite(securityPin, HIGH);
+  digitalWrite(securityPin, LOW);
   //dev.initialize();
   //Serial.println("Hello from the otter slide");
-
-  delay(3000);
-
-  fireSecurity(securityPin);
-  Serial.print("HIGH");
-
-  Serial.println();
 }
 
 #ifdef DEBUG
@@ -153,9 +209,13 @@ void loop()
   // TEST! Change i 1 or 8
   // for each IMU
   // Serial.println();
-  // timeRead = micros();
-  // Serial.print(timeRead);
-  // Serial.print(",");
+
+  timeRead = micros();
+  #ifdef PRINTHUMAN
+    printNewLineHuman(timeRead);
+  #else
+    printNewLineMachine(timeRead);
+  #endif
   for ( uint i = 0; i < 8; i += 1  ) {
 
       // Serial.print(i);
@@ -173,6 +233,9 @@ void loop()
           xAccel = ((float)data.value.x_accel)/32768.0*16; // new x
           yAccel = ((float)data.value.y_accel)/32768.0*16; // new y
           zAccel = ((float)data.value.z_accel)/32768.0*16; // new z
+          xGyro = ((float)data.value.x_gyro)/32768.0*2000;
+          yGyro = ((float)data.value.y_gyro)/32768.0*2000;
+          zGyro = ((float)data.value.z_gyro)/32768.0*2000;
           newAccelMagSq = xAccel*xAccel+yAccel*yAccel+zAccel*zAccel;
           //hx711Value = abs(hx711Dev.blockingRead()); // NEEDS CALIBRATION
 
@@ -193,37 +256,14 @@ void loop()
           AccelsMagPre [i][1] = AccelsMagPre [i][0];
           AccelsMagPre [i][0] = newAccelMagSq;
 
+          #ifdef PRINTHUMAN
+            printAccelsHuman(i,newAccelMagSq,xAccel,yAccel,zAccel,xGyro,yGyro,zGyro);
+          #else
+            printAccelsMachine(i,xAccel,yAccel,zAccel,xGyro,yGyro,zGyro);
+          #endif
 
-          // // PRINT HUMAN READABLE
-          // Serial.println();
-          // Serial.print("Acceleration Magnitude = ");
-          // Serial.print(newAccelMagSq);
-          // Serial.print("  x = ");
-          // Serial.print(xAccel);
-          // Serial.print("  y = ");
-          // Serial.print(yAccel);
-          // Serial.print("  z = ");
-          // Serial.print(zAccel);
-          // Serial.print("  x Gyro = ");
-          // Serial.print(((float)data.value.x_gyro)/32768.0*2000);
-          // Serial.print("  y Gyro = ");
-          // Serial.print(((float)data.value.y_gyro)/32768.0*2000);
-          // Serial.print("  z Gyro = ");
-          // Serial.print(((float)data.value.z_gyro)/32768.0*2000);
 
-          // // OUTPUT CSV
-          // Serial.print(xAccel);
-          // Serial.print(",");
-          // Serial.print(yAccel);
-          // Serial.print(",");
-          // Serial.print(zAccel);
-          // Serial.print(",");
-          // Serial.print(((float)data.value.x_gyro)/32768.0*2000);
-          // Serial.print(",");
-          // Serial.print(((float)data.value.y_gyro)/32768.0*2000);
-          // Serial.print(",");
-          // Serial.print(((float)data.value.z_gyro)/32768.0*2000);
-          // Serial.print(",");
+
         } // end if FSYNCed
 
       // REMOVING READFIFO
@@ -241,7 +281,13 @@ void loop()
     // 4: Mesuring Aileron position with KMZ60
     angleAileronDeg = kmz.readAngleDeg();
 
-    // Serial.print(angleAileronDeg);
+
+    #ifdef PRINTHUMAN
+      printAngleHuman(angleAileronDeg);
+    #else
+      printAngleMachine(angleAileronDeg);
+    #endif
+
 
 
 
